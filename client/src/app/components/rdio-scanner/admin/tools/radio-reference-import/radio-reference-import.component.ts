@@ -66,6 +66,7 @@ export interface RadioReferenceSite {
 }
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-radio-reference-import',
     styleUrls: ['./radio-reference-import.component.scss'],
     templateUrl: './radio-reference-import.component.html',

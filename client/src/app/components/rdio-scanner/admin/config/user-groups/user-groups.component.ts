@@ -62,6 +62,7 @@ interface RegistrationCode {
 }
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-admin-user-groups',
   templateUrl: './user-groups.component.html',
   styleUrls: ['./user-groups.component.scss']

@@ -34,6 +34,7 @@ interface Talkgroup {
 }
 
 @Component({
+    standalone: false,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     selector: 'rdio-scanner-admin-systems-selection',

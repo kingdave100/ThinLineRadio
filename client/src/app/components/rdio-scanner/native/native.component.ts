@@ -22,6 +22,7 @@ import { MatSnackBarRef } from '@angular/material/snack-bar';
 import { timer } from 'rxjs';
 
 @Component({
+    standalone: false,
     selector: 'RdioScannerNative',
     styleUrls: ['./native.component.scss'],
     templateUrl: './native.component.html',

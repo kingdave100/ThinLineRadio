@@ -20,6 +20,7 @@
 import { Component } from '@angular/core';
 
 @Component({
+    standalone: false,
     selector: 'app-store-badge',
     templateUrl: './app-store-badge.component.svg',
 })

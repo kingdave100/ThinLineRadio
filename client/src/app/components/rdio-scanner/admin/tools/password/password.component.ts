@@ -24,6 +24,7 @@ import { RdioScannerAdminService } from '../../admin.service';
 import { Subscription } from 'rxjs';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-password',
     styleUrls: ['./password.component.scss'],
     templateUrl: './password.component.html',

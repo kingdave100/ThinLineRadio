@@ -24,6 +24,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Log, LogsQuery, LogsQueryOptions, RdioScannerAdminService } from '../admin.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-logs',
     styleUrls: ['./logs.component.scss'],
     templateUrl: './logs.component.html',

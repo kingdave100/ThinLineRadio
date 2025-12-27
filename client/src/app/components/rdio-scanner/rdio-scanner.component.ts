@@ -27,6 +27,7 @@ import { RdioScannerService } from './rdio-scanner.service';
 import { RdioScannerNativeComponent } from './native/native.component';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner',
     styleUrls: ['./rdio-scanner.component.scss'],
     templateUrl: './rdio-scanner.component.html',

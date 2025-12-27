@@ -26,6 +26,7 @@ import { RdioScannerEvent, RdioScannerConfig } from '../rdio-scanner';
 import { Subscription } from 'rxjs';
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-email-verification',
   templateUrl: './email-verification.component.html',
   styleUrls: ['./email-verification.component.scss']

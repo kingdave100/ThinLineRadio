@@ -20,6 +20,7 @@
 import { Component } from '@angular/core';
 
 @Component({
+    standalone: false,
   templateUrl: './update.component.html',
   styleUrls: ['./update.component.scss'],
 })

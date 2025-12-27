@@ -25,6 +25,7 @@ import { RdioScannerAdminUsersComponent } from './users/users.component';
 import { RdioScannerAdminUserGroupsComponent } from './user-groups/user-groups.component';
 
 @Component({
+    standalone: false,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     selector: 'rdio-scanner-admin-config',

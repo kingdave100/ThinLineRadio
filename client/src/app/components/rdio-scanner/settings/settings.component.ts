@@ -28,6 +28,7 @@ import { TagColorService, TagColorConfig } from '../tag-color.service';
 import { AlertSoundService, AlertSound } from '../alert-sound.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-settings',
     styleUrls: ['./settings.component.scss'],
     templateUrl: './settings.component.html',

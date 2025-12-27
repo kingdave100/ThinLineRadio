@@ -24,6 +24,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RdioScannerService } from '../rdio-scanner.service';
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-user-login',
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss']

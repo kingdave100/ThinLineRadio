@@ -25,6 +25,7 @@ import { RdioScannerService } from '../rdio-scanner.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-user-registration',
   templateUrl: './user-registration.component.html',
   styleUrls: ['./user-registration.component.scss']

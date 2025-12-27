@@ -22,6 +22,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-transfer-user-dialog',
   template: `
     <h2 mat-dialog-title>Transfer User to Group</h2>

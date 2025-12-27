@@ -21,6 +21,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Config, RdioScannerAdminService, System } from '../../admin.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-import-talkgroups',
     styleUrls: ['./import-talkgroups.component.scss'],
     templateUrl: './import-talkgroups.component.html',

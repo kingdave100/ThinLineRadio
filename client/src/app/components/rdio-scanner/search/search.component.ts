@@ -36,6 +36,7 @@ import { RdioScannerService } from '../rdio-scanner.service';
 import { FavoritesService } from '../favorites.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-search',
     styleUrls: ['./search.component.scss'],
     templateUrl: './search.component.html',

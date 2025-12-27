@@ -74,16 +74,17 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "buildTarget": "rdio-scanner:build:development",
             "port": 3000,
             "host": "localhost",
             "ssl": false
           },
           "configurations": {
             "production": {
-              "browserTarget": "rdio-scanner:build:production"
+              "buildTarget": "rdio-scanner:build:production"
             },
             "development": {
-              "browserTarget": "rdio-scanner:build:development",
+              "buildTarget": "rdio-scanner:build:development",
               "proxyConfig": "src/proxy.conf.js"
             }
           },
@@ -92,7 +93,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "rdio-scanner:build"
+            "buildTarget": "rdio-scanner:build"
           }
         },
         "test": {

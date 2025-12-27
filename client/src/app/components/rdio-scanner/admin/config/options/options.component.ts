@@ -27,6 +27,7 @@ import { RecoverAPIKeyDialogComponent } from './recover-api-key-dialog.component
 import { LocationDataService } from 'src/app/services/location-data.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-options',
     templateUrl: './options.component.html',
 })

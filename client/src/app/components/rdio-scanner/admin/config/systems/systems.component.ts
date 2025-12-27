@@ -24,6 +24,7 @@ import { MatExpansionPanel } from '@angular/material/expansion';
 import { RdioScannerAdminService, Group, Tag } from '../../admin.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-systems',
     templateUrl: './systems.component.html',
 })

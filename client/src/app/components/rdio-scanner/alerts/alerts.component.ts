@@ -24,6 +24,7 @@ import { AlertSoundService } from '../alert-sound.service';
 import { SettingsService } from '../settings/settings.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-alerts',
     styleUrls: ['./alerts.component.scss'],
     templateUrl: './alerts.component.html',

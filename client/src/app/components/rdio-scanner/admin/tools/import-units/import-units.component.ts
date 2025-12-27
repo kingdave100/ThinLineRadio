@@ -21,6 +21,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Config, RdioScannerAdminService, System } from '../../admin.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-import-units',
     styleUrls: ['./import-units.component.scss'],
     templateUrl: './import-units.component.html',

@@ -30,6 +30,7 @@ type StoredPreference = RdioScannerAlertPreference & {
 };
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-alert-preferences',
     styleUrls: [
         '../../common.scss',

@@ -34,6 +34,7 @@ import { TagColorService } from '../tag-color.service';
 import { FavoritesService, FavoriteItem } from '../favorites.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-select',
     styleUrls: [
         '../common.scss',

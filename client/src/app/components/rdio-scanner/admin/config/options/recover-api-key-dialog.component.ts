@@ -23,6 +23,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-recover-api-key-dialog',
   template: `
     <h2 mat-dialog-title>Recover API Key</h2>

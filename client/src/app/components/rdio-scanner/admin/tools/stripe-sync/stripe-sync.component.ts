@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RdioScannerAdminService } from '../../admin.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-stripe-sync',
     templateUrl: './stripe-sync.component.html',
     styleUrls: ['./stripe-sync.component.scss']

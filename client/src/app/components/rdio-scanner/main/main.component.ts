@@ -40,6 +40,7 @@ import { RdioScannerAlert } from '../rdio-scanner';
 import { SettingsService } from '../settings/settings.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-main',
     styleUrls: [
         '../common.scss',

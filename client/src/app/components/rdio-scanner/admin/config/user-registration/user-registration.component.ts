@@ -22,6 +22,7 @@ import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-admin-user-registration',
   templateUrl: './user-registration.component.html',
   styleUrls: ['./user-registration.component.scss']

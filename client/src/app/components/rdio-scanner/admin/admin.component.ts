@@ -21,6 +21,7 @@ import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { AdminEvent, RdioScannerAdminService, Group, Tag } from './admin.service';
 
 @Component({
+    standalone: false,
     encapsulation: ViewEncapsulation.None,
     selector: 'rdio-scanner-admin',
     styleUrls: ['./admin.component.scss'],

@@ -25,6 +25,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { RdioScannerAdminService, Group, Tag } from '../../../admin.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-system',
     templateUrl: './system.component.html',
 })

@@ -23,6 +23,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 // Results Dialog Component
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-invitation-results-dialog',
   template: `
     <h2 mat-dialog-title>
@@ -184,6 +185,7 @@ export class InvitationResultsDialogComponent {
 }
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-invite-user-dialog',
   template: `
     <h2 mat-dialog-title>Invite Users</h2>
@@ -372,6 +374,7 @@ export class InviteUserDialogComponent implements OnInit {
 
 // Create User Dialog Component
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-create-user-dialog',
   template: `
     <h2 mat-dialog-title>
@@ -507,6 +510,7 @@ export class CreateUserDialogComponent implements OnInit {
 
 // Reset Password Dialog Component
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-reset-password-dialog',
   template: `
     <h2 mat-dialog-title>

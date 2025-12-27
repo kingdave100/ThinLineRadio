@@ -23,6 +23,7 @@ import { RdioScannerConfig } from '../rdio-scanner';
 declare var Stripe: any;
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-stripe-checkout',
   templateUrl: './stripe-checkout.component.html',
   styleUrls: ['./stripe-checkout.component.scss']

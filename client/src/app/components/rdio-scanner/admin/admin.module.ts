@@ -100,7 +100,6 @@ import { RdioScannerAdminStripeSyncComponent } from './tools/stripe-sync/stripe-
         RdioScannerAdminConfigSyncComponent,
         RdioScannerAdminStripeSyncComponent,
     ],
-    entryComponents: [RdioScannerAdminSystemsSelectComponent],
     exports: [RdioScannerAdminComponent],
     imports: [AppSharedModule, HttpClientModule, FormsModule, MatProgressSpinnerModule, MatProgressBarModule, MatChipsModule, MatPaginatorModule],
     providers: [RdioScannerAdminService, AlertsService],

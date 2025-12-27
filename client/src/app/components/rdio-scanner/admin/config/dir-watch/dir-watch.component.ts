@@ -24,6 +24,7 @@ import { MatExpansionPanel } from '@angular/material/expansion';
 import { RdioScannerAdminService } from '../../admin.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-dir-watch',
     templateUrl: './dir-watch.component.html',
 })

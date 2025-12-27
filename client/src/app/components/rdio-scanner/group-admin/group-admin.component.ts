@@ -57,6 +57,7 @@ interface TransferRequest {
 }
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-group-admin',
   templateUrl: './group-admin.component.html',
   styleUrls: ['./group-admin.component.scss']

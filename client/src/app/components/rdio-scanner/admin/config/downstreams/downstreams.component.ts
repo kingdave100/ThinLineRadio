@@ -26,6 +26,7 @@ import { RdioScannerAdminService } from '../../admin.service';
 import { RdioScannerAdminSystemsSelectComponent } from '../systems/select/select.component';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-downstreams',
     templateUrl: './downstreams.component.html',
 })

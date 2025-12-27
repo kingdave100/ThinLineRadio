@@ -31,6 +31,7 @@ interface SelectedStateData {
 }
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-request-api-key-dialog',
   template: `
     <h2 mat-dialog-title>{{ isUpdateMode ? 'Update' : 'Request' }} Push Notification API Key</h2>

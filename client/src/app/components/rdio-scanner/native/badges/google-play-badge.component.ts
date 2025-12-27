@@ -20,6 +20,7 @@
 import { Component } from '@angular/core';
 
 @Component({
+    standalone: false,
     selector: 'google-play-badge',
     templateUrl: './google-play-badge.component.svg',
 })

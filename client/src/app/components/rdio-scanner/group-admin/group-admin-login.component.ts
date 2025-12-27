@@ -24,6 +24,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
+    standalone: false,
   selector: 'rdio-scanner-group-admin-login',
   templateUrl: './group-admin-login.component.html',
   styleUrls: ['./group-admin-login.component.scss']

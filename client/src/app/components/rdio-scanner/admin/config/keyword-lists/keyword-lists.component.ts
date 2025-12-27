@@ -33,6 +33,7 @@ interface KeywordList {
 }
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-keyword-lists',
     templateUrl: './keyword-lists.component.html',
 })

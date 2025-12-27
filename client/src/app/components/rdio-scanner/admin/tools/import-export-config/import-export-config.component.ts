@@ -24,6 +24,7 @@ import { Config, RdioScannerAdminService } from '../../admin.service';
 import packageInfo from '../../../../../../../package.json';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-import-export-config',
     styleUrls: ['./import-export-config.component.scss'],
     templateUrl: './import-export-config.component.html',

@@ -55,6 +55,7 @@ export interface User {
 }
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-users',
     templateUrl: './users.component.html',
     styleUrls: ['./users.component.scss']

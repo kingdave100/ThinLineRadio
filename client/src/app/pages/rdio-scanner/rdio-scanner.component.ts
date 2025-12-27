@@ -20,6 +20,7 @@
 import { Component } from '@angular/core';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-page',
     template: '<router-outlet></router-outlet>',
 })

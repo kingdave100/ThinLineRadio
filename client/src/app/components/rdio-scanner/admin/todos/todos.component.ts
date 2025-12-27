@@ -26,6 +26,7 @@ interface Todo {
 }
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-todos',
     styleUrls: ['./todos.component.scss'],
     templateUrl: './todos.component.html',

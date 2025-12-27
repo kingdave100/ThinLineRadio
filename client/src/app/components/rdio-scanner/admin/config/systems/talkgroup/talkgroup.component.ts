@@ -26,6 +26,7 @@ import { RdioScannerAdminService, Group, Tag } from '../../../admin.service';
 import { RdioScannerToneSet } from '../../../../rdio-scanner';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-talkgroup',
     templateUrl: './talkgroup.component.html',
 })

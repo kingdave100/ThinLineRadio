@@ -23,6 +23,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RdioScannerAdminService } from '../admin.service';
 
 @Component({
+    standalone: false,
     selector: 'rdio-scanner-admin-login',
     styleUrls: ['./login.component.scss'],
     templateUrl: './login.component.html',
