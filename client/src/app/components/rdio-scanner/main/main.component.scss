@@ -574,9 +574,11 @@
     background: rgba(0, 0, 0, 0.3);
     border-radius: var(--radius-sm);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     min-height: 0;
-    overflow: visible;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 
     .history-header {
       font-size: 10px;
@@ -811,100 +813,6 @@
         line-height: 1;
         white-space: nowrap;
       }
-    }
-  }
-
-  // Volume Control
-  .volume-control {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    margin-top: 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-normal);
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: var(--border-color-light);
-    }
-
-    .volume-icon {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    .volume-slider {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      height: 32px;
-
-      ::ng-deep {
-        .mat-mdc-slider {
-          width: 100%;
-          height: 32px;
-          display: flex;
-          align-items: center;
-        }
-
-        .mdc-slider {
-          width: 100%;
-          height: 32px;
-          display: flex;
-          align-items: center;
-        }
-
-        .mdc-slider__track {
-          height: 4px;
-        }
-
-        // The active (filled) part of the track - white to show volume level
-        .mdc-slider__track--active_fill {
-          background-color: rgba(255, 255, 255, 0.9) !important;
-          border-color: rgba(255, 255, 255, 0.9) !important;
-          border-radius: 2px 0 0 2px;
-        }
-
-        // The inactive (unfilled) part of the track - very dark gray
-        .mdc-slider__track--inactive {
-          background-color: rgba(80, 80, 80, 0.5) !important;
-          border-radius: 2px;
-        }
-
-        .mdc-slider__thumb {
-          width: 20px;
-          height: 20px;
-        }
-
-        .mdc-slider__thumb-knob {
-          background: var(--primary-color, #00e676) !important;
-          border: none;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          box-shadow: 0 0 0 4px rgba(30, 30, 30, 1), 0 2px 6px rgba(0, 0, 0, 0.4) !important;
-        }
-
-        .mdc-slider__value-indicator {
-          display: none;
-        }
-      }
-    }
-
-    .volume-value {
-      min-width: 45px;
-      text-align: right;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 12px;
-      font-weight: 500;
-      flex-shrink: 0;
     }
   }
 }

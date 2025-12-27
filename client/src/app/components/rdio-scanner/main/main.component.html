@@ -130,7 +130,6 @@
         </div>
         <!-- Transmission History -->
         <div class="transmission-history">
-            <div class="history-header">Last 10 Transmissions</div>
             <table class="history">
                 <thead>
                     <tr>
@@ -226,21 +225,6 @@
             <mat-icon>settings</mat-icon>
             <span>SETTINGS</span>
         </button>
-    </div>
-    
-    <!-- Volume Control -->
-    <div class="volume-control">
-        <mat-icon class="volume-icon">volume_up</mat-icon>
-        <mat-slider 
-            class="volume-slider"
-            [min]="0" 
-            [max]="100" 
-            [step]="1"
-            [discrete]="true"
-            [showTickMarks]="false">
-            <input matSliderThumb [(ngModel)]="volume" (ngModelChange)="onVolumeChange($event)">
-        </mat-slider>
-        <span class="volume-value">{{ volume }}%</span>
     </div>
 </div>
 
