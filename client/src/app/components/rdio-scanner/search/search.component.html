@@ -121,120 +121,202 @@
 <mat-card class="rdio-filters">
     <div class="filters-header">
         <h3 class="filters-title">
-            <mat-icon>filter_list</mat-icon>
+            <mat-icon>tune</mat-icon>
             Search Filters
+            <span class="active-filters-badge" *ngIf="getActiveFiltersCount() > 0">
+                <mat-icon>filter_alt</mat-icon>
+                {{ getActiveFiltersCount() }}
+            </span>
         </h3>
-        <span class="active-filters-badge" *ngIf="getActiveFiltersCount() > 0">
-            {{ getActiveFiltersCount() }} active
-        </span>
-    </div>
-    <form autocomplete="off" [formGroup]="form">
-        <div class="filter-row">
-            <button type="button" class="compact-button" [matMenuTriggerFor]="sortMenu">
-                <mat-icon>{{ form.value.sort === -1 ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
-                <span>{{ form.value.sort === -1 ? 'Newest First' : 'Oldest First' }}</span>
+        <div class="header-actions">
+            <button type="button" class="header-button favorites-toggle"
+                    [class.active]="showFavoritesOnly"
+                    (click)="toggleFavoritesOnly()"
+                    matTooltip="Show only favorite calls">
+                <mat-icon>{{ showFavoritesOnly ? 'star' : 'star_border' }}</mat-icon>
+                <span>Favorites Only</span>
             </button>
-            <mat-menu #sortMenu="matMenu">
-                <button mat-menu-item (click)="setSort(-1)">
-                    <mat-icon>arrow_downward</mat-icon>
-                    <span>Newest First</span>
+            <button type="button" class="header-button reset-button"
+                    [disabled]="resultsPending"
+                    (click)="resetForm()"
+                    matTooltip="Reset all filters">
+                <mat-icon>restart_alt</mat-icon>
+                <span>Reset</span>
+            </button>
+        </div>
+    </div>
+
+    <form autocomplete="off" [formGroup]="form">
+        <!-- Date & Sort Group -->
+        <div class="filter-section">
+            <div class="filter-grid">
+                <button type="button" class="filter-button" [matMenuTriggerFor]="sortMenu">
+                    <div class="button-icon">
+                        <mat-icon>{{ form.value.sort === -1 ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+                    </div>
+                    <div class="button-content">
+                        <span class="button-label">Sort:</span>
+                        <span class="button-value">{{ form.value.sort === -1 ? 'Newest' : 'Oldest' }}</span>
+                    </div>
                 </button>
-                <button mat-menu-item (click)="setSort(1)">
-                    <mat-icon>arrow_upward</mat-icon>
-                    <span>Oldest First</span>
-                </button>
-            </mat-menu>
-            
-            <div class="date-button-wrapper">
-                <button type="button" class="compact-button" (click)="openDatePicker()">
-                    <mat-icon>calendar_today</mat-icon>
-                    <span>{{ selectedDate ? (selectedDate | date:'MM/dd/yyyy') : 'Select Date' }}</span>
-                </button>
-                <button *ngIf="selectedDate" type="button" class="clear-date-btn" (click)="clearDate(); $event.stopPropagation()" mat-icon-button>
-                    <mat-icon>close</mat-icon>
-                </button>
-                <input matInput [matDatepicker]="datePicker" [value]="selectedDate" (dateChange)="onDateSelected($event)" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;">
-                <mat-datepicker #datePicker></mat-datepicker>
+                <mat-menu #sortMenu="matMenu" class="filter-menu">
+                    <button mat-menu-item (click)="setSort(-1)">
+                        <mat-icon>arrow_downward</mat-icon>
+                        <span>Newest First</span>
+                    </button>
+                    <button mat-menu-item (click)="setSort(1)">
+                        <mat-icon>arrow_upward</mat-icon>
+                        <span>Oldest First</span>
+                    </button>
+                </mat-menu>
+
+                <div class="date-button-wrapper">
+                    <button type="button" class="filter-button" (click)="openDatePicker()">
+                        <div class="button-icon">
+                            <mat-icon>event</mat-icon>
+                        </div>
+                        <div class="button-content">
+                            <span class="button-label">Date:</span>
+                            <span class="button-value">{{ selectedDate ? (selectedDate | date:'MM/dd/yy') : 'All' }}</span>
+                        </div>
+                    </button>
+                    <button *ngIf="selectedDate" type="button" class="clear-filter-btn" (click)="clearDate(); $event.stopPropagation()" mat-icon-button>
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <input matInput [matDatepicker]="datePicker" [value]="selectedDate" (dateChange)="onDateSelected($event)" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;">
+                    <mat-datepicker #datePicker></mat-datepicker>
+                </div>
             </div>
         </div>
 
-        <div class="filter-row">
-            <button type="button" class="compact-button" [matMenuTriggerFor]="systemMenu">
-                <mat-icon>router</mat-icon>
-                <span>{{ getSelectedSystemLabel() }}</span>
-            </button>
-            <mat-menu #systemMenu="matMenu">
-                <button mat-menu-item (click)="setSystem(-1)">
-                    <span>All Systems</span>
-                </button>
-                <button *ngFor="let system of optionsSystem; index as i" mat-menu-item (click)="setSystem(i)">
-                    <span>{{ system }}</span>
-                </button>
-            </mat-menu>
+        <div class="filter-divider"></div>
 
-            <button type="button" class="compact-button" [matMenuTriggerFor]="talkgroupMenu" [disabled]="form.value.system < 0">
-                <mat-icon>group</mat-icon>
-                <span>{{ getSelectedTalkgroupLabel() }}</span>
-            </button>
-            <mat-menu #talkgroupMenu="matMenu">
-                <button mat-menu-item (click)="setTalkgroup(-1)">
-                    <span>All Talkgroups</span>
+        <!-- System & Talkgroup Group -->
+        <div class="filter-section">
+            <div class="filter-grid">
+                <button type="button" class="filter-button" [matMenuTriggerFor]="systemMenu">
+                    <div class="button-icon">
+                        <mat-icon>radio</mat-icon>
+                    </div>
+                    <div class="button-content">
+                        <span class="button-label">System:</span>
+                        <span class="button-value">{{ getSelectedSystemLabel() }}</span>
+                    </div>
                 </button>
-                <button *ngFor="let talkgroup of optionsTalkgroup; index as i" mat-menu-item (click)="setTalkgroup(i)">
-                    <span>{{ talkgroup }}</span>
+                <mat-menu #systemMenu="matMenu" class="filter-menu">
+                    <button mat-menu-item (click)="setSystem(-1)">
+                        <mat-icon>select_all</mat-icon>
+                        <span>All Systems</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button *ngFor="let system of optionsSystem; index as i" mat-menu-item (click)="setSystem(i)">
+                        <mat-icon>radio</mat-icon>
+                        <span>{{ system }}</span>
+                    </button>
+                </mat-menu>
+
+                <button type="button" class="filter-button" [matMenuTriggerFor]="talkgroupMenu" [disabled]="form.value.system < 0">
+                    <div class="button-icon">
+                        <mat-icon>forum</mat-icon>
+                    </div>
+                    <div class="button-content">
+                        <span class="button-label">TG:</span>
+                        <span class="button-value">{{ getSelectedTalkgroupLabel() }}</span>
+                    </div>
                 </button>
-            </mat-menu>
+                <mat-menu #talkgroupMenu="matMenu" class="filter-menu">
+                    <button mat-menu-item (click)="setTalkgroup(-1)">
+                        <mat-icon>select_all</mat-icon>
+                        <span>All Talkgroups</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button *ngFor="let talkgroup of optionsTalkgroup; index as i" mat-menu-item (click)="setTalkgroup(i)">
+                        <mat-icon>forum</mat-icon>
+                        <span>{{ talkgroup }}</span>
+                    </button>
+                </mat-menu>
+            </div>
         </div>
 
-        <div class="filter-row">
-            <button type="button" class="compact-button" [matMenuTriggerFor]="groupMenu">
-                <mat-icon>category</mat-icon>
-                <span>{{ getSelectedGroupLabel() }}</span>
-            </button>
-            <mat-menu #groupMenu="matMenu">
-                <button mat-menu-item (click)="setGroup(-1)">
-                    <span>All Groups</span>
-                </button>
-                <button *ngFor="let group of optionsGroup; index as i" mat-menu-item (click)="setGroup(i)">
-                    <span>{{ group }}</span>
-                </button>
-            </mat-menu>
+        <div class="filter-divider"></div>
 
-            <button type="button" class="compact-button" [matMenuTriggerFor]="tagMenu">
-                <mat-icon>local_offer</mat-icon>
-                <span>{{ getSelectedTagLabel() }}</span>
-            </button>
-            <mat-menu #tagMenu="matMenu">
-                <button mat-menu-item (click)="setTag(-1)">
-                    <span>All Tags</span>
+        <!-- Group & Tag Group -->
+        <div class="filter-section">
+            <div class="filter-grid">
+                <button type="button" class="filter-button" [matMenuTriggerFor]="groupMenu">
+                    <div class="button-icon">
+                        <mat-icon>workspaces</mat-icon>
+                    </div>
+                    <div class="button-content">
+                        <span class="button-label">Group:</span>
+                        <span class="button-value">{{ getSelectedGroupLabel() }}</span>
+                    </div>
                 </button>
-                <button *ngFor="let tag of optionsTag; index as i" mat-menu-item (click)="setTag(i)">
-                    <span>{{ tag }}</span>
+                <mat-menu #groupMenu="matMenu" class="filter-menu">
+                    <button mat-menu-item (click)="setGroup(-1)">
+                        <mat-icon>select_all</mat-icon>
+                        <span>All Groups</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button *ngFor="let group of optionsGroup; index as i" mat-menu-item (click)="setGroup(i)">
+                        <mat-icon>workspaces</mat-icon>
+                        <span>{{ group }}</span>
+                    </button>
+                </mat-menu>
+
+                <button type="button" class="filter-button" [matMenuTriggerFor]="tagMenu">
+                    <div class="button-icon">
+                        <mat-icon>label</mat-icon>
+                    </div>
+                    <div class="button-content">
+                        <span class="button-label">Tag:</span>
+                        <span class="button-value">{{ getSelectedTagLabel() }}</span>
+                    </div>
                 </button>
-            </mat-menu>
+                <mat-menu #tagMenu="matMenu" class="filter-menu">
+                    <button mat-menu-item (click)="setTag(-1)">
+                        <mat-icon>select_all</mat-icon>
+                        <span>All Tags</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button *ngFor="let tag of optionsTag; index as i" mat-menu-item (click)="setTag(i)">
+                        <mat-icon>label</mat-icon>
+                        <span>{{ tag }}</span>
+                    </button>
+                </mat-menu>
+            </div>
         </div>
 
-        <div class="filter-row">
-            <button type="button" class="compact-button" [matMenuTriggerFor]="favoriteMenu">
-                <mat-icon>star</mat-icon>
-                <span>{{ getSelectedFavoriteLabel() }}</span>
-            </button>
-            <mat-menu #favoriteMenu="matMenu">
-                <button mat-menu-item (click)="setFavorite(-1)">
-                    <span>All Calls</span>
+        <div class="filter-divider"></div>
+
+        <!-- Favorites & Actions -->
+        <div class="filter-section">
+            <div class="filter-grid">
+                <button type="button" class="filter-button" [matMenuTriggerFor]="favoriteMenu">
+                    <div class="button-icon">
+                        <mat-icon>star</mat-icon>
+                    </div>
+                    <div class="button-content">
+                        <span class="button-label">Fav:</span>
+                        <span class="button-value">{{ getSelectedFavoriteLabel() }}</span>
+                    </div>
                 </button>
-                <button *ngFor="let favorite of optionsFavorites; index as i" mat-menu-item (click)="setFavorite(i)">
-                    <span>{{ favorite.label }}</span>
-                </button>
-                <div *ngIf="optionsFavorites.length === 0" class="no-favorites-message">
-                    <span style="padding: 8px 16px; color: rgba(255, 255, 255, 0.5); font-style: italic;">No favorites saved</span>
-                </div>
-            </mat-menu>
-            
-            <button type="button" class="compact-button reset-button" [disabled]="resultsPending" (click)="resetForm()">
-                <mat-icon>refresh</mat-icon>
-                <span>Reset</span>
-            </button>
+                <mat-menu #favoriteMenu="matMenu" class="filter-menu">
+                    <button mat-menu-item (click)="setFavorite(-1)">
+                        <mat-icon>select_all</mat-icon>
+                        <span>All Calls</span>
+                    </button>
+                    <mat-divider *ngIf="optionsFavorites.length > 0"></mat-divider>
+                    <button *ngFor="let favorite of optionsFavorites; index as i" mat-menu-item (click)="setFavorite(i)">
+                        <mat-icon>star</mat-icon>
+                        <span>{{ favorite.label }}</span>
+                    </button>
+                    <div *ngIf="optionsFavorites.length === 0" class="no-favorites-message">
+                        <mat-icon>star_border</mat-icon>
+                        <span>No favorites saved</span>
+                    </div>
+                </mat-menu>
+            </div>
         </div>
     </form>
 </mat-card>

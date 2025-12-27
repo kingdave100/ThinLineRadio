@@ -21,7 +21,7 @@ import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, 
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, timer } from 'rxjs';
+import { interval, Subscription, timer } from 'rxjs';
 import packageInfo from '../../../../../package.json';
 import {
     RdioScannerAvoidOptions,
@@ -178,6 +178,8 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
     currentScanningSystemIndex = 0;
     private scanningSystemTimer: Subscription | undefined;
+    private vuMeterTimer: Subscription | undefined;
+    vuMeterLevel = 0;
 
     getCurrentScanningSystem(): string {
         const enabledSystems = this.getEnabledSystems();
@@ -221,6 +223,24 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
             this.scanningSystemTimer = undefined;
         }
         this.currentScanningSystemIndex = 0;
+    }
+
+    private startVuMeterAnimation(): void {
+        this.stopVuMeterAnimation();
+
+        // Update VU meter at 60fps (every ~16ms) for smooth animation
+        this.vuMeterTimer = interval(16).subscribe(() => {
+            this.vuMeterLevel = this.calculateAudioLevel();
+            this.ngChangeDetectorRef.detectChanges();
+        });
+    }
+
+    private stopVuMeterAnimation(): void {
+        if (this.vuMeterTimer) {
+            this.vuMeterTimer.unsubscribe();
+            this.vuMeterTimer = undefined;
+        }
+        this.vuMeterLevel = 0;
     }
 
     @Output() openSearchPanel = new EventEmitter<void>();
@@ -402,6 +422,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
     ngOnDestroy(): void {
         this.clockTimer?.unsubscribe();
         this.stopScanningAnimation();
+        this.stopVuMeterAnimation();
 
         this.eventSubscription.unsubscribe();
         this.alertsSubscription?.unsubscribe();
@@ -1093,12 +1114,18 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
             this.dimmer = true;
 
+            // Start VU meter animation when audio starts playing
+            this.startVuMeterAnimation();
+
             this.dimmerTimer = timer(this.config.dimmerDelay).subscribe(() => {
                 this.dimmerTimer?.unsubscribe();
 
                 this.dimmerTimer = undefined;
 
                 this.dimmer = false;
+
+                // Stop VU meter animation when audio stops
+                this.stopVuMeterAnimation();
 
                 this.ngChangeDetectorRef.detectChanges();
             });
@@ -1350,6 +1377,57 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
         });
 
         return `Patched Talkgroups:\n${patchedNames.join('\n')}`;
+    }
+
+    /**
+     * Calculate audio level for VU meter display (0-12 scale)
+     * Returns 0-12 where:
+     * - 0-8: Normal levels (green)
+     * - 9-10: High levels (yellow)
+     * - 11-12: Peak levels (red)
+     *
+     * Currently shows simulated audio levels during playback.
+     * This can be enhanced with Web Audio API AnalyserNode for real-time
+     * audio level analysis.
+     */
+    private calculateAudioLevel(): number {
+        const call = this.call || this.callPrevious;
+
+        // If no active call or not playing (dimmer off), show no audio
+        if (!call || !this.dimmer) {
+            return 0;
+        }
+
+        // Use high-precision timestamp for smoother animation
+        const time = performance.now() / 1000; // Convert to seconds
+
+        // Create a pseudo-random but smooth audio level
+        // Multiple sine waves at different frequencies create realistic variation
+
+        // Base level varies between 6-9 (normal speech levels)
+        const baseLevel = 6 + (Math.sin(time * 2.8) * 1.5);
+
+        // Add some variation (peaks and valleys)
+        const variation = Math.sin(time * 7.3) * 2;
+
+        // Secondary variation for more natural movement
+        const microVariation = Math.sin(time * 13.7) * 0.8;
+
+        // Occasional peaks that hit higher zones
+        const peakModulation = Math.sin(time * 1.3) > 0.75 ? 2 : 0;
+
+        // Calculate final level
+        let level = baseLevel + variation + microVariation + peakModulation;
+
+        // Clamp to 0-12 range
+        level = Math.max(0, Math.min(12, level));
+
+        // Round to integer
+        return Math.floor(level);
+    }
+
+    getAudioLevel(): number {
+        return this.vuMeterLevel;
     }
 
 }

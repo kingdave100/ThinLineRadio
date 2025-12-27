@@ -17,7 +17,7 @@
  * ****************************************************************************
  */
 
-import { ChangeDetectorRef, Component, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { MatPaginator } from '@angular/material/paginator';
@@ -41,7 +41,7 @@ import { FavoritesService } from '../favorites.service';
     styleUrls: ['./search.component.scss'],
     templateUrl: './search.component.html',
 })
-export class RdioScannerSearchComponent implements OnDestroy {
+export class RdioScannerSearchComponent implements OnInit, OnDestroy {
     call: RdioScannerCall | undefined;
     callPending: number | undefined;
 
@@ -107,6 +107,7 @@ export class RdioScannerSearchComponent implements OnDestroy {
     private accumulatedResults: RdioScannerCall[] = [];
     private loadedOffsets: Set<number> = new Set();
     hasMoreResults = false;
+    private backendTotalCount: number | null = null; // Store the backend's reported total count
     private lastSearchOptions: RdioScannerSearchOptions | null = null;
     private isRefreshing = false; // Guard flag to prevent recursive calls
     private formChangeTimeout: any = null; // Debounce timer for form changes
@@ -115,8 +116,25 @@ export class RdioScannerSearchComponent implements OnDestroy {
 
     @ViewChild(MatPaginator, { read: MatPaginator }) private paginator: MatPaginator | undefined;
     @ViewChild('datePicker') private datePicker: MatDatepicker<Date> | undefined;
-    
+
     selectedDate: Date | null = null;
+    showFavoritesOnly = false;
+
+    ngOnInit(): void {
+        // Get current config from service if it exists
+        const currentConfig = this.rdioScannerService.getConfig();
+        if (currentConfig) {
+            this.config = currentConfig;
+            this.optionsGroup = Object.keys(this.config?.groups || []).sort((a, b) => a.localeCompare(b));
+            this.optionsSystem = (this.config?.systems || []).map((system) => system.label);
+            this.optionsTag = Object.keys(this.config?.tags || []).sort((a, b) => a.localeCompare(b));
+            this.loadFavorites();
+            this.time12h = this.config?.time12hFormat || false;
+
+            // Trigger change detection to ensure UI updates with loaded config
+            this.ngChangeDetectorRef.detectChanges();
+        }
+    }
 
     download(id: number): void {
         this.rdioScannerService.loadAndDownload(id);
@@ -165,6 +183,7 @@ export class RdioScannerSearchComponent implements OnDestroy {
         this.accumulatedResults = [];
         this.loadedOffsets.clear();
         this.hasMoreResults = false;
+        this.backendTotalCount = null;
         this.lastSearchOptions = null;
         this.lastRequestId = null; // Reset request ID for new search
         this.offset = 0;
@@ -326,11 +345,18 @@ export class RdioScannerSearchComponent implements OnDestroy {
             // Check if we have data for the current page
             // Only fetch if we DON'T have data for the page
             const hasDataForPage = from < this.accumulatedResults.length;
-            
+
             if (!hasDataForPage) {
+                // Check if there are actually more results available
+                // Don't try to fetch if we've already loaded all available results
+                if (!this.hasMoreResults && this.accumulatedResults.length > 0) {
+                    console.log(`No more results available. Accumulated: ${this.accumulatedResults.length}, requested page starts at: ${from}`);
+                    return; // Don't fetch, we've reached the end
+                }
+
                 // We don't have data for this page - check if batch is loaded
                 const batchLoaded = this.loadedOffsets.has(requiredOffset);
-                
+
                 if (!batchLoaded) {
                     // Batch isn't loaded yet - fetch it
                     console.log(`Fetching batch at offset ${requiredOffset} for page ${pageIndex + 1} (from=${from}, accumulated=${this.accumulatedResults.length})`);
@@ -366,15 +392,16 @@ export class RdioScannerSearchComponent implements OnDestroy {
             const currentBatchStartPage = currentBatchNumber * pagesInBatch;
             const currentBatchEndPage = currentBatchStartPage + pagesInBatch - 1;
             const pageWithinBatch = pageIndex - currentBatchStartPage; // 0-19 for pages in current batch
-            
+
             // When reaching the last 2 pages of current batch, pre-fetch next batch
-            // This works for ANY batch: 
+            // This works for ANY batch:
             // - First batch: pages 18-19 (triggers on pages 19-20, 1-based)
-            // - Second batch: pages 38-39 (triggers on pages 39-40, 1-based) 
+            // - Second batch: pages 38-39 (triggers on pages 39-40, 1-based)
             // - Third batch: pages 58-59 (triggers on pages 59-60, 1-based)
             // pageWithinBatch is 0-based: 0-19 within each batch
             if (pageWithinBatch >= pagesInBatch - 2) {
                 const nextBatchOffset = requiredOffset + this.limit;
+
                 if (!this.loadedOffsets.has(nextBatchOffset)) {
                     // Pre-fetch the next batch in background without blocking
                     console.log(`Pre-fetching next batch at offset ${nextBatchOffset} (batch ${currentBatchNumber + 1}, page ${pageIndex + 1} of ${currentBatchEndPage + 1}, pageWithinBatch=${pageWithinBatch} of ${pagesInBatch - 1})`);
@@ -417,6 +444,7 @@ export class RdioScannerSearchComponent implements OnDestroy {
         });
 
         this.selectedDate = null;
+        this.showFavoritesOnly = false;
         this.paginator?.firstPage();
 
         this.formChangeHandler();
@@ -545,8 +573,14 @@ export class RdioScannerSearchComponent implements OnDestroy {
         if (this.form.value.group >= 0) count++;
         if (this.form.value.tag >= 0) count++;
         if (this.form.value.favorite >= 0) count++;
+        if (this.showFavoritesOnly) count++;
 
         return count;
+    }
+
+    toggleFavoritesOnly(): void {
+        this.showFavoritesOnly = !this.showFavoritesOnly;
+        this.formChangeHandler();
     }
 
     searchCalls(): void {
@@ -647,6 +681,7 @@ export class RdioScannerSearchComponent implements OnDestroy {
             this.accumulatedResults = [];
             this.loadedOffsets.clear();
             this.hasMoreResults = false;
+            this.backendTotalCount = null;
             // When options change (like system filter), always reset offset to 0
             this.offset = 0;
             options.offset = 0;
@@ -764,47 +799,76 @@ export class RdioScannerSearchComponent implements OnDestroy {
             if (this.playbackList && this.playbackList.results) {
                 // Get the offset from the options (handles pre-fetched batches)
                 const batchOffset = this.playbackList.options?.offset ?? 0;
-                
+
                 // Mark this offset as loaded
                 this.loadedOffsets.add(batchOffset);
-                
+
                 // Update hasMore flag
                 this.hasMoreResults = this.playbackList.hasMore || false;
-                
+
                 // If this is a new search (offset 0), always reset accumulated results
                 // This ensures we start fresh for each new search
                 if (batchOffset === 0) {
                     this.accumulatedResults = [];
                     this.loadedOffsets.clear();
+                    // Store the backend's total count from the first batch
+                    this.backendTotalCount = this.playbackList.count;
                 }
-                
+
+                // Filter results if favorites only mode is active
+                let resultsToAdd = this.playbackList.results;
+                if (this.showFavoritesOnly && this.optionsFavorites.length > 0) {
+                    // Create a set of favorite system-talkgroup combinations for fast lookup
+                    const favoriteSet = new Set(
+                        this.optionsFavorites.map(fav => `${fav.systemId}-${fav.talkgroupId}`)
+                    );
+
+                    // Filter to only show calls from favorite talkgroups
+                    resultsToAdd = this.playbackList.results.filter(call => {
+                        const key = `${call.system}-${call.talkgroup}`;
+                        return favoriteSet.has(key);
+                    });
+
+                    // Also update the playbackList.results to only include favorites
+                    // This ensures the service's playback queue only contains favorites
+                    this.playbackList.results = resultsToAdd;
+                }
+
                 // Append new results to accumulated results
                 // For offset 0 (new search), start from index 0
                 // For subsequent batches, start from the offset index
-                for (let i = 0; i < this.playbackList.results.length; i++) {
+                for (let i = 0; i < resultsToAdd.length; i++) {
                     const insertIndex = batchOffset + i;
                     if (insertIndex >= this.accumulatedResults.length) {
-                        this.accumulatedResults.push(this.playbackList.results[i]);
+                        this.accumulatedResults.push(resultsToAdd[i]);
                     } else {
                         // Replace if already exists (shouldn't happen, but be safe)
-                        this.accumulatedResults[insertIndex] = this.playbackList.results[i];
+                        this.accumulatedResults[insertIndex] = resultsToAdd[i];
                     }
                 }
-                
-                // Update playbackList.count for paginator based on accumulated results
-                const pageSize = this.paginator?.pageSize ?? 10;
-                // Calculate total length: accumulated results + one extra page if more available
-                // This ensures paginator shows next page button when there are more results
-                if (this.hasMoreResults) {
-                    // If we have more, set count to current results + one full page
-                    this.playbackList.count = this.accumulatedResults.length + pageSize;
+
+                // Update playbackList.count for pagination
+                // Only trust backend count if it's clearly a true total (not just batch size)
+                // Backend count is only valid if: it's > batch size OR (hasMore is false AND count >= accumulated)
+                const isTrueTotalCount = this.backendTotalCount !== null &&
+                    (this.backendTotalCount > this.limit ||
+                     (!this.hasMoreResults && this.backendTotalCount >= this.accumulatedResults.length));
+
+                if (isTrueTotalCount) {
+                    // Backend provided a valid total count - use it
+                    this.playbackList.count = this.backendTotalCount!;
+                } else if (this.hasMoreResults) {
+                    // Backend count not available/valid, but there are more results
+                    // Set count to accumulated + enough for more pages to enable pagination
+                    const pageSize = this.paginator?.pageSize ?? 10;
+                    this.playbackList.count = this.accumulatedResults.length + (pageSize * 5);
                 } else {
-                    // No more results, use actual count
+                    // No more results available - set count to exactly what we have
                     this.playbackList.count = this.accumulatedResults.length;
                 }
                 
                 // Log for debugging
-                console.log(`Results received: ${this.playbackList.results.length} results, accumulated: ${this.accumulatedResults.length}, offset: ${batchOffset}`, this.playbackList.results);
+                console.log(`Results received: ${this.playbackList.results.length} results, accumulated: ${this.accumulatedResults.length}, backend total: ${this.backendTotalCount}, paginator count: ${this.playbackList.count}, hasMore: ${this.hasMoreResults}, offset: ${batchOffset}`);
             }
 
             this.resultsPending = false;
