@@ -18,8 +18,11 @@
  */
 
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
@@ -101,7 +104,19 @@ import { RdioScannerAdminStripeSyncComponent } from './tools/stripe-sync/stripe-
         RdioScannerAdminStripeSyncComponent,
     ],
     exports: [RdioScannerAdminComponent],
-    imports: [AppSharedModule, HttpClientModule, FormsModule, MatProgressSpinnerModule, MatProgressBarModule, MatChipsModule, MatPaginatorModule],
+    imports: [
+        AppSharedModule,
+        HttpClientModule,
+        FormsModule,
+        MatTableModule,
+        MatIconModule,
+        MatExpansionModule,
+        MatProgressSpinnerModule,
+        MatProgressBarModule,
+        MatChipsModule,
+        MatPaginatorModule,
+    ],
     providers: [RdioScannerAdminService, AlertsService],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class RdioScannerAdminModule { }
