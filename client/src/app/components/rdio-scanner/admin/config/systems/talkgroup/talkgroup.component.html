@@ -6,13 +6,13 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="number" min="1" step="1" matInput formControlName="talkgroupRef" placeholder="Id">
-            <mat-error *ngIf="form?.get('talkgroupRef')?.hasError('duplicate')">
+            <mat-error *ngIf="form.get('talkgroupRef')?.hasError('duplicate')">
                 Id is already defined
             </mat-error>
-            <mat-error *ngIf="form?.get('talkgroupRef')?.hasError('min')">
+            <mat-error *ngIf="form.get('talkgroupRef')?.hasError('min')">
                 Id is invalid
             </mat-error>
-            <mat-error *ngIf="form?.get('talkgroupRef')?.hasError('required')">
+            <mat-error *ngIf="form.get('talkgroupRef')?.hasError('required')">
                 Id is required
             </mat-error>
         </mat-form-field>
@@ -24,7 +24,7 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="text" matInput formControlName="label" placeholder="Label">
-            <mat-error *ngIf="form?.get('label')?.hasError('required')">
+            <mat-error *ngIf="form.get('label')?.hasError('required')">
                 Label is required
             </mat-error>
         </mat-form-field>
@@ -36,7 +36,7 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="text" matInput formControlName="name" placeholder="Name">
-            <mat-error *ngIf="form?.get('name')?.hasError('required')">
+            <mat-error *ngIf="form.get('name')?.hasError('required')">
                 Name is required
             </mat-error>
         </mat-form-field>
@@ -52,7 +52,7 @@
                     {{ group.label }}
                 </mat-option>
             </mat-select>
-            <mat-error *ngIf="form?.get('groupId')?.hasError('required')">
+            <mat-error *ngIf="form.get('groupId')?.hasError('required')">
                 Group is required
             </mat-error>
         </mat-form-field>
@@ -68,7 +68,7 @@
                     {{ tag.label }}
                 </mat-option>
             </mat-select>
-            <mat-error *ngIf="form?.get('tagId')?.hasError('required')">
+            <mat-error *ngIf="form.get('tagId')?.hasError('required')">
                 Tag is required
             </mat-error>
         </mat-form-field>
@@ -91,7 +91,7 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="number" min="0" matInput formControlName="frequency" placeholder="Frequency">
-            <mat-error *ngIf="form?.get('frequency')?.errors">
+            <mat-error *ngIf="form.get('frequency')?.errors">
                 Invalid frequency
             </mat-error>
         </mat-form-field>

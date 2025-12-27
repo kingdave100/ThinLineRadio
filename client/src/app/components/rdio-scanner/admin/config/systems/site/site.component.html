@@ -6,13 +6,13 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="number" min="1" step="1" matInput formControlName="siteRef" placeholder="Id">
-            <mat-error *ngIf="form?.get('siteRef')?.hasError('duplicate')">
+            <mat-error *ngIf="form.get('siteRef')?.hasError('duplicate')">
                 Id is already defined
             </mat-error>
-            <mat-error *ngIf="form?.get('siteRef')?.hasError('min')">
+            <mat-error *ngIf="form.get('siteRef')?.hasError('min')">
                 Id is invalid
             </mat-error>
-            <mat-error *ngIf="form?.get('siteRef')?.hasError('required')">
+            <mat-error *ngIf="form.get('siteRef')?.hasError('required')">
                 Id is required
             </mat-error>
         </mat-form-field>
@@ -24,7 +24,7 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="text" matInput formControlName="label" placeholder="Label">
-            <mat-error *ngIf="form?.get('label')?.hasError('required')">
+            <mat-error *ngIf="form.get('label')?.hasError('required')">
                 Label is required
             </mat-error>
         </mat-form-field>

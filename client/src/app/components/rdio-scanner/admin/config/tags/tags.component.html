@@ -4,7 +4,7 @@
     <button type="button" mat-button color="accent" (click)="add()">New Tag</button>
     <button type="button" mat-button color="primary" (click)="cleanupUnused()">Cleanup Unused</button>
 </div>
-<p *ngIf="!tags?.length" class="mat-small text-center">No defined Tags</p>
+<p *ngIf="!tags.length" class="mat-small text-center">No defined Tags</p>
 <mat-accordion displayMode="flat" cdkDropList [cdkDropListAutoScrollStep]=64 [cdkDropListData]="tags"
     (cdkDropListDropped)="drop($event)">
     <mat-expansion-panel *ngFor="let tag of tags; index as i" cdkDrag>
@@ -24,7 +24,7 @@
                 </p>
                 <mat-form-field floatLabel="auto">
                     <input type="text" matInput formControlName="label" placeholder="Label">
-                    <mat-error *ngIf="form?.get('label')?.hasError('required')">
+                    <mat-error *ngIf="tag.get('label')?.hasError('required')">
                         Label is required
                     </mat-error>
                 </mat-form-field>

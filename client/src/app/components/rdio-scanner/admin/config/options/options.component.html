@@ -41,10 +41,10 @@
         </p>
         <mat-form-field>
             <input type="number" min="0" step="1" matInput formControlName="defaultSystemDelay" placeholder="Delay in minutes">
-            <mat-error *ngIf="form?.get('defaultSystemDelay')?.hasError('required')">
+            <mat-error *ngIf="form.get('defaultSystemDelay')?.hasError('required')">
                 Default delay is required
             </mat-error>
-            <mat-error *ngIf="form?.get('defaultSystemDelay')?.hasError('min')">
+            <mat-error *ngIf="form.get('defaultSystemDelay')?.hasError('min')">
                 Default delay must be 0 or greater
             </mat-error>
         </mat-form-field>
@@ -67,10 +67,10 @@
         </p>
         <mat-form-field>
             <input type="number" min="0" step="1" matInput formControlName="dimmerDelay">
-            <mat-error *ngIf="form?.get('dimmerDelay')?.hasError('required')">
+            <mat-error *ngIf="form.get('dimmerDelay')?.hasError('required')">
                 Dimmer delay is required
             </mat-error>
-            <mat-error *ngIf="form?.get('dimmerDelay')?.hasError('min')">
+            <mat-error *ngIf="form.get('dimmerDelay')?.hasError('min')">
                 Dimmer delay is invalid
             </mat-error>
         </mat-form-field>
@@ -92,10 +92,10 @@
         </p>
         <mat-form-field>
             <input type="number" min="0" step="1" matInput formControlName="duplicateDetectionTimeFrame">
-            <mat-error *ngIf="form?.get('duplicateDetectionTimeFrame')?.hasError('required')">
+            <mat-error *ngIf="form.get('duplicateDetectionTimeFrame')?.hasError('required')">
                 Duplicate call time frame is required
             </mat-error>
-            <mat-error *ngIf="form?.get('duplicateDetectionTimeFrame')?.hasError('min')">
+            <mat-error *ngIf="form.get('duplicateDetectionTimeFrame')?.hasError('min')">
                 Duplicate call time frame is invalid
             </mat-error>
         </mat-form-field>
@@ -128,10 +128,10 @@
         </p>
         <mat-form-field>
             <input type="number" min="0" step="1" matInput formControlName="maxClients">
-            <mat-error *ngIf="form?.get('maxClients')?.hasError('required')">
+            <mat-error *ngIf="form.get('maxClients')?.hasError('required')">
                 Max clients is required
             </mat-error>
-            <mat-error *ngIf="form?.get('maxClients')?.hasError('min')">
+            <mat-error *ngIf="form.get('maxClients')?.hasError('min')">
                 Max clients is invalid
             </mat-error>
         </mat-form-field>
@@ -154,10 +154,10 @@
         </p>
         <mat-form-field>
             <input type="number" min="0" step="1" matInput formControlName="pruneDays">
-            <mat-error *ngIf="form?.get('pruneDays')?.hasError('required')">
+            <mat-error *ngIf="form.get('pruneDays')?.hasError('required')">
                 Prune days is required
             </mat-error>
-            <mat-error *ngIf="form?.get('pruneDays')?.hasError('min')">
+            <mat-error *ngIf="form.get('pruneDays')?.hasError('min')">
                 Prune days is invalid
             </mat-error>
         </mat-form-field>
@@ -193,7 +193,7 @@
     </div>
 
     <!-- Show logged-in state when credentials exist and not editing -->
-    <div class="row" *ngIf="form?.get('radioReferenceEnabled')?.value && isRadioReferenceLoggedIn && !isEditingRadioReference">
+    <div class="row" *ngIf="form.get('radioReferenceEnabled')?.value && isRadioReferenceLoggedIn && !isEditingRadioReference">
         <p>
             <span class="mat-body">Radio Reference Account</span><br>
             <span class="mat-caption">Logged in as: <strong>{{ form.get('radioReferenceUsername')?.value }}</strong></span>
@@ -211,34 +211,34 @@
     </div>
 
     <!-- Show login form when enabled but not logged in, or when editing -->
-    <div class="row" *ngIf="form?.get('radioReferenceEnabled')?.value && shouldShowLoginForm">
+    <div class="row" *ngIf="form.get('radioReferenceEnabled')?.value && shouldShowLoginForm">
         <p>
             <span class="mat-body">Radio Reference Username</span><br>
             <span class="mat-caption">Your RadioReference.com username for API access.</span>
         </p>
         <mat-form-field floatLabel="auto">
             <input type="text" matInput formControlName="radioReferenceUsername" placeholder="Username">
-            <mat-error *ngIf="form?.get('radioReferenceUsername')?.hasError('required')">
+            <mat-error *ngIf="form.get('radioReferenceUsername')?.hasError('required')">
                 Username is required when Radio Reference is enabled
             </mat-error>
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('radioReferenceEnabled')?.value && shouldShowLoginForm">
+    <div class="row" *ngIf="form.get('radioReferenceEnabled')?.value && shouldShowLoginForm">
         <p>
             <span class="mat-body">Radio Reference Password</span><br>
             <span class="mat-caption">Your RadioReference.com password for API access.</span>
         </p>
         <mat-form-field floatLabel="auto">
             <input type="password" matInput formControlName="radioReferencePassword" placeholder="Password">
-            <mat-error *ngIf="form?.get('radioReferencePassword')?.hasError('required')">
+            <mat-error *ngIf="form.get('radioReferencePassword')?.hasError('required')">
                 Password is required when Radio Reference is enabled
             </mat-error>
         </mat-form-field>
     </div>
 
     <!-- Show cancel button when editing -->
-    <div class="row" *ngIf="form?.get('radioReferenceEnabled')?.value && isEditingRadioReference">
+    <div class="row" *ngIf="form.get('radioReferenceEnabled')?.value && isEditingRadioReference">
         <div style="display: flex; gap: 8px;">
             <button mat-stroked-button (click)="cancelEditRadioReference()">
                 <mat-icon>cancel</mat-icon>
@@ -262,7 +262,7 @@
         </div>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Transcription Provider</span><br>
             <span class="mat-caption">Select the transcription provider to use. Whisper API Server uses an external OpenAI-compatible Whisper server.</span>
@@ -277,7 +277,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value && form?.get('transcriptionConfig')?.get('provider')?.value === 'whisper-api'" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value && form.get('transcriptionConfig')?.get('provider')?.value === 'whisper-api'" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Whisper API Server URL</span><br>
             <span class="mat-caption">Base URL of the external Whisper API server (e.g., "http://localhost:8000"). The server should be OpenAI-compatible and provide /v1/audio/transcriptions endpoint.</span>
@@ -287,7 +287,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value && form?.get('transcriptionConfig')?.get('provider')?.value === 'whisper-api'" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value && form.get('transcriptionConfig')?.get('provider')?.value === 'whisper-api'" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Whisper API Key (Optional)</span><br>
             <span class="mat-caption">Optional API key if your Whisper API server requires authentication.</span>
@@ -297,7 +297,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value && form?.get('transcriptionConfig')?.get('provider')?.value === 'azure'" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value && form.get('transcriptionConfig')?.get('provider')?.value === 'azure'" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Azure Subscription Key</span><br>
             <span class="mat-caption">Your Azure Speech Services subscription key. Get it from the Azure Portal under your Speech resource.</span>
@@ -307,7 +307,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value && form?.get('transcriptionConfig')?.get('provider')?.value === 'azure'" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value && form.get('transcriptionConfig')?.get('provider')?.value === 'azure'" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Azure Region</span><br>
             <span class="mat-caption">Azure region where your Speech resource is located (e.g., "eastus", "westus2", "westeurope").</span>
@@ -317,7 +317,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value && form?.get('transcriptionConfig')?.get('provider')?.value === 'google'" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value && form.get('transcriptionConfig')?.get('provider')?.value === 'google'" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Google Cloud API Key</span><br>
             <span class="mat-caption">Your Google Cloud Speech-to-Text API key. You can use either an API key or service account credentials.</span>
@@ -327,7 +327,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value && form?.get('transcriptionConfig')?.get('provider')?.value === 'google'" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value && form.get('transcriptionConfig')?.get('provider')?.value === 'google'" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Google Service Account JSON (Alternative to API Key)</span><br>
             <span class="mat-caption">Paste your Google Cloud service account JSON credentials here. This is an alternative to using an API key. Note: OAuth2 token generation from credentials is not yet implemented, so API key is recommended.</span>
@@ -337,7 +337,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value && form?.get('transcriptionConfig')?.get('provider')?.value === 'assemblyai'" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value && form.get('transcriptionConfig')?.get('provider')?.value === 'assemblyai'" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">AssemblyAI API Key</span><br>
             <span class="mat-caption">Your AssemblyAI API key. Get it from https://www.assemblyai.com/app/account</span>
@@ -348,7 +348,7 @@
     </div>
 
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Language</span><br>
             <span class="mat-caption">Language code for transcription (e.g., "en" for English, "auto" for auto-detect).</span>
@@ -358,7 +358,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Worker Pool Size</span><br>
             <span class="mat-caption">Number of parallel transcription workers. More workers process faster but use more resources.</span>
@@ -368,7 +368,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Minimum Call Duration (seconds)</span><br>
             <span class="mat-caption">Skip transcription for calls shorter than this duration. Set to 0 to transcribe all calls. Useful to avoid transcribing very short/test transmissions.</span>
@@ -379,7 +379,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Hallucination Patterns</span><br>
             <span class="mat-caption">Phrases that should be removed from transcripts (case-insensitive). Whisper may hallucinate common phrases from tone-only audio. Add one pattern per line. Example: "THE BELL IS INVITED TO SOUND THREE TIMES"</span>
@@ -396,7 +396,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Hallucination Auto-Detection</span><br>
             <span class="mat-caption">
@@ -416,7 +416,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('transcriptionEnabled')?.value && form?.get('transcriptionConfig')?.get('hallucinationDetectionMode')?.value !== 'off'" formGroupName="transcriptionConfig">
+    <div class="row" *ngIf="form.get('transcriptionEnabled')?.value && form.get('transcriptionConfig')?.get('hallucinationDetectionMode')?.value !== 'off'" formGroupName="transcriptionConfig">
         <p>
             <span class="mat-body">Minimum Rejected Occurrences</span><br>
             <span class="mat-caption">
@@ -504,7 +504,7 @@
         </div>
     </div>
 
-    <div class="row" *ngIf="form?.get('turnstileEnabled')?.value">
+    <div class="row" *ngIf="form.get('turnstileEnabled')?.value">
         <p>
             <span class="mat-body">Turnstile Site Key</span><br>
             <span class="mat-caption">Your public site key from Cloudflare Turnstile.</span>
@@ -514,7 +514,7 @@
         </mat-form-field>
     </div>
 
-    <div class="row" *ngIf="form?.get('turnstileEnabled')?.value">
+    <div class="row" *ngIf="form.get('turnstileEnabled')?.value">
         <p>
             <span class="mat-body">Turnstile Secret Key</span><br>
             <span class="mat-caption">Your private secret key from Cloudflare Turnstile.</span>

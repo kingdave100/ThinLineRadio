@@ -5,7 +5,7 @@
                 <mat-panel-title>
                     <mat-icon>person_add</mat-icon>
                     User Registration
-                    <mat-icon *ngIf="form?.get('options')?.invalid" color="warn">error</mat-icon>
+                    <mat-icon *ngIf="form.get('options')?.invalid" color="warn">error</mat-icon>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <rdio-scanner-admin-user-registration [form]="options"></rdio-scanner-admin-user-registration>
@@ -33,7 +33,7 @@
                 <mat-panel-title>
                     <mat-icon>vpn_key</mat-icon>
                     ApiKey
-                    <mat-icon *ngIf="form?.get('apikey')?.invalid" color="warn">error</mat-icon>
+                    <mat-icon *ngIf="form.get('apikey')?.invalid" color="warn">error</mat-icon>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <rdio-scanner-admin-apikeys #apikeyComponent [form]="apikeys"></rdio-scanner-admin-apikeys>
@@ -43,7 +43,7 @@
                 <mat-panel-title>
                     <mat-icon>folder</mat-icon>
                     Dirwatch
-                    <mat-icon *ngIf="form?.get('dirwatch')?.invalid" color="warn">error</mat-icon>
+                    <mat-icon *ngIf="form.get('dirwatch')?.invalid" color="warn">error</mat-icon>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <rdio-scanner-admin-dirwatch #dirwatchComponent [form]="dirwatch"></rdio-scanner-admin-dirwatch>
@@ -53,7 +53,7 @@
                 <mat-panel-title>
                     <mat-icon>share</mat-icon>
                     Downstreams
-                    <mat-icon *ngIf="form?.get('downstreams')?.invalid" color="warn">error</mat-icon>
+                    <mat-icon *ngIf="form.get('downstreams')?.invalid" color="warn">error</mat-icon>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <rdio-scanner-admin-downstreams #downstreamsComponent [form]="downstreams"></rdio-scanner-admin-downstreams>
@@ -63,7 +63,7 @@
                 <mat-panel-title>
                     <mat-icon>workspaces</mat-icon>
                     Groups
-                    <mat-icon *ngIf="form?.get('groups')?.invalid" color="warn">error</mat-icon>
+                    <mat-icon *ngIf="form.get('groups')?.invalid" color="warn">error</mat-icon>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <rdio-scanner-admin-groups [form]="groups"></rdio-scanner-admin-groups>
@@ -73,7 +73,7 @@
                 <mat-panel-title>
                     <mat-icon>tune</mat-icon>
                     Options
-                    <mat-icon *ngIf="form?.get('options')?.invalid" color="warn">error</mat-icon>
+                    <mat-icon *ngIf="form.get('options')?.invalid" color="warn">error</mat-icon>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <rdio-scanner-admin-options [form]="options"></rdio-scanner-admin-options>
@@ -83,7 +83,7 @@
                 <mat-panel-title>
                     <mat-icon>podcasts</mat-icon>
                     Systems
-                    <mat-icon *ngIf="form?.get('systems')?.invalid" color="warn">error</mat-icon>
+                    <mat-icon *ngIf="form.get('systems')?.invalid" color="warn">error</mat-icon>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <rdio-scanner-admin-systems #systemsComponent [form]="systems"></rdio-scanner-admin-systems>
@@ -93,7 +93,7 @@
                 <mat-panel-title>
                     <mat-icon>sell</mat-icon>
                     Tags
-                    <mat-icon *ngIf="form?.get('tags')?.invalid" color="warn">error</mat-icon>
+                    <mat-icon *ngIf="form.get('tags')?.invalid" color="warn">error</mat-icon>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <rdio-scanner-admin-tags [form]="tags"></rdio-scanner-admin-tags>

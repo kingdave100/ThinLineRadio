@@ -15,7 +15,7 @@
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <mat-icon cdkDragHandle>drag_indicator</mat-icon>
-                {{ system.value.label?.trim() || 'NewSystem' }}
+                {{ system.value.label.trim() || 'NewSystem' }}
                 <mat-icon *ngIf="system.invalid" color="warn">error</mat-icon>
             </mat-panel-title>
         </mat-expansion-panel-header>

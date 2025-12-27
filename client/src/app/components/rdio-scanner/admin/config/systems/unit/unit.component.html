@@ -7,13 +7,13 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="number" min="1" step="1" matInput formControlName="unitRef" placeholder="Id">
-            <mat-error *ngIf="form?.get('unitRef')?.hasError('duplicate')">
+            <mat-error *ngIf="form.get('unitRef')?.hasError('duplicate')">
                 Id value is already defined
             </mat-error>
-            <mat-error *ngIf="form?.get('unitRef')?.hasError('min')">
+            <mat-error *ngIf="form.get('unitRef')?.hasError('min')">
                 Id value is invalid
             </mat-error>
-            <mat-error *ngIf="form?.get('unitRef')?.hasError('required')">
+            <mat-error *ngIf="form.get('unitRef')?.hasError('required')">
                 Id value is required
             </mat-error>
         </mat-form-field>
@@ -25,10 +25,10 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="number" min="1" step="1" matInput formControlName="unitFrom" placeholder="From">
-            <mat-error *ngIf="form?.get('unitFrom')?.hasError('range')">
+            <mat-error *ngIf="form.get('unitFrom')?.hasError('range')">
                 From value should be lower than To value
             </mat-error>
-            <mat-error *ngIf="form?.get('unitFrom')?.hasError('min')">
+            <mat-error *ngIf="form.get('unitFrom')?.hasError('min')">
                 From value To is invalid
             </mat-error>
         </mat-form-field>
@@ -40,10 +40,10 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="number" min="1" step="1" matInput formControlName="unitTo" placeholder="To">
-            <mat-error *ngIf="form?.get('unitTo')?.hasError('range')">
+            <mat-error *ngIf="form.get('unitTo')?.hasError('range')">
                 To value should be higher than From value
             </mat-error>
-            <mat-error *ngIf="form?.get('unitTo')?.hasError('min')">
+            <mat-error *ngIf="form.get('unitTo')?.hasError('min')">
                 To value is invalid
             </mat-error>
         </mat-form-field>
@@ -55,7 +55,7 @@
         </p>
         <mat-form-field floatLabel="auto">
             <input type="text" matInput formControlName="label" placeholder="Label">
-            <mat-error *ngIf="form?.get('label')?.hasError('required')">
+            <mat-error *ngIf="form.get('label')?.hasError('required')">
                 Label is required
             </mat-error>
         </mat-form-field>

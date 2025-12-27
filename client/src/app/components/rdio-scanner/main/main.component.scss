@@ -536,6 +536,10 @@
       padding: 2px 6px;
       text-align: start;
       color: rgba(255, 255, 255, 0.8);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 0;
 
       &:nth-child(1) {
         width: 10%;

@@ -3,7 +3,7 @@
         authenticate with an API key to exchange audio files.</p>
     <button type="button" mat-button color="accent" (click)="add()">New API key</button>
 </div>
-<p *ngIf="!apikeys?.length" class="mat-small text-center">No defined API keys</p>
+<p *ngIf="!apikeys.length" class="mat-small text-center">No defined API keys</p>
 <mat-accordion displayMode="flat" cdkDropList [cdkDropListAutoScrollStep]=64 [cdkDropListData]="apikeys" (cdkDropListDropped)="drop($event)">
     <mat-expansion-panel *ngFor="let apikey of apikeys; index as i" cdkDrag>
         <mat-expansion-panel-header>
