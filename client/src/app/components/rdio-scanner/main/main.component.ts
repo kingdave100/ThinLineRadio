@@ -1537,4 +1537,32 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
         this.rdioScannerService.setVolume(newVolume / 100);
     }
 
+    getPatchedTalkgroupsTooltip(): string {
+        const patches = (this.call || this.callPrevious)?.patches;
+        if (!patches || patches.length === 0) {
+            return '';
+        }
+
+        const systemId = (this.call || this.callPrevious)?.system;
+        if (systemId === undefined) {
+            return '';
+        }
+
+        // Find the system in the config
+        const system = this.config?.systems?.find(s => s.id === systemId);
+
+        // Try to get talkgroup labels from the config
+        const patchedNames: string[] = patches.map(tgId => {
+            if (system?.talkgroups) {
+                const talkgroup = system.talkgroups.find(tg => tg.id === tgId);
+                if (talkgroup) {
+                    return talkgroup.label || talkgroup.name || `${tgId}`;
+                }
+            }
+            return `${tgId}`;
+        });
+
+        return `Patched Talkgroups:\n${patchedNames.join('\n')}`;
+    }
+
 }

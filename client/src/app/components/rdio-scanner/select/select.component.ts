@@ -707,6 +707,52 @@ export class RdioScannerSelectComponent implements OnDestroy, OnInit {
         return favoriteTalkgroups;
     }
 
+    getFavoriteTalkgroupsByGroup(): Array<{groupName: string, talkgroups: Array<{system: RdioScannerSystem, talkgroup: RdioScannerTalkgroup}>}> {
+        const flatFavorites = this.getAllFavoriteTalkgroupsFlat();
+        const groupMap = new Map<string, Array<{system: RdioScannerSystem, talkgroup: RdioScannerTalkgroup}>>();
+
+        flatFavorites.forEach(item => {
+            // Get all groups for this talkgroup
+            const groups = item.talkgroup.groups || [];
+
+            if (groups.length === 0) {
+                // If no groups, add to 'Ungrouped'
+                if (!groupMap.has('Ungrouped')) {
+                    groupMap.set('Ungrouped', []);
+                }
+                groupMap.get('Ungrouped')!.push(item);
+            } else {
+                // Add to each group this talkgroup belongs to
+                groups.forEach(group => {
+                    if (!groupMap.has(group)) {
+                        groupMap.set(group, []);
+                    }
+                    groupMap.get(group)!.push(item);
+                });
+            }
+        });
+
+        // Sort groups alphabetically, keeping 'Ungrouped' last
+        const sorted = Array.from(groupMap.entries()).sort((a, b) => {
+            if (a[0] === 'Ungrouped') return 1;
+            if (b[0] === 'Ungrouped') return -1;
+            return a[0].localeCompare(b[0]);
+        });
+
+        return sorted.map(([groupName, talkgroups]) => ({ groupName, talkgroups }));
+    }
+
+    favoriteGroupExpanded: Map<string, boolean> = new Map();
+
+    isFavoriteGroupExpanded(groupName: string): boolean {
+        return this.favoriteGroupExpanded.get(groupName) || false;
+    }
+
+    toggleFavoriteGroup(groupName: string): void {
+        const current = this.favoriteGroupExpanded.get(groupName) || false;
+        this.favoriteGroupExpanded.set(groupName, !current);
+    }
+
     getFavoriteTagGroupsForSystem(system: RdioScannerSystem): Array<{tag: string, talkgroups: RdioScannerTalkgroup[]}> {
         const groups: Map<string, RdioScannerTalkgroup[]> = new Map();
         const isSystemFavorite = this.favoritesService.isSystemFavorite(system.id);

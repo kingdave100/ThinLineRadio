@@ -536,6 +536,19 @@ export class RdioScannerSearchComponent implements OnDestroy {
         return this.optionsTag[index] || 'All Tags';
     }
 
+    getActiveFiltersCount(): number {
+        let count = 0;
+
+        if (this.selectedDate) count++;
+        if (this.form.value.system >= 0) count++;
+        if (this.form.value.talkgroup >= 0) count++;
+        if (this.form.value.group >= 0) count++;
+        if (this.form.value.tag >= 0) count++;
+        if (this.form.value.favorite >= 0) count++;
+
+        return count;
+    }
+
     searchCalls(): void {
         if (this.livefeedPlayback) {
             return;

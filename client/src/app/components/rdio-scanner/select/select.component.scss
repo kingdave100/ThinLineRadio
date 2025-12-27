@@ -263,6 +263,55 @@
       padding: 0 8px;
     }
 
+    .favorites-grouped-container {
+      padding: 0 8px;
+
+      .favorite-group {
+        margin-bottom: 8px;
+
+        .favorite-group-header {
+          display: flex;
+          align-items: center;
+          padding: 8px 12px;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: var(--radius-sm);
+          cursor: pointer;
+          transition: background var(--transition-normal);
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.08);
+          }
+
+          .expand-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-right: 8px;
+          }
+
+          .group-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+          }
+
+          .group-count {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+          }
+        }
+
+        .favorite-group-content {
+          margin-top: 8px;
+        }
+      }
+    }
+
     .favorite-system-card {
       margin-bottom: 8px;
     }

@@ -1,7 +1,9 @@
 :host {
   box-sizing: border-box;
-  display: block;
-  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
   width: 100%;
   margin: 0 auto;
   min-width: 0;
@@ -9,6 +11,7 @@
   user-select: none;
   background: var(--background-dark);
   color: var(--text-primary);
+  overflow: hidden;
 }
 
 .main-container {
@@ -18,6 +21,9 @@
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 
   &.subscription-locked {
     .scanner-layout {
@@ -135,11 +141,19 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 
   .scanner-column {
     flex: 0 0 auto;
     min-width: 0;
     max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-x: visible;
+    overflow-y: hidden;
   }
 }
 
@@ -148,8 +162,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   padding: 0 8px;
+  flex-shrink: 0;
 
   .signout-button {
     background-color: var(--warn-color);
@@ -181,9 +196,11 @@
   align-items: center;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  padding: 4px;
+  padding: 6px 8px;
   margin-bottom: 4px;
   gap: 8px;
+  flex-shrink: 0;
+  overflow: visible;
 
   .left-led-container {
     display: flex;
@@ -308,12 +325,16 @@
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   cursor: default;
-  display: block;
+  display: flex;
+  flex-direction: column;
   font: 400 14px/20px;
   padding: 6px;
   margin-bottom: 4px;
   box-shadow: var(--elevation-1);
   transition: box-shadow var(--transition-normal);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 
   &.idle {
     background: #2e2e2e;
@@ -381,7 +402,11 @@
 
   .wrapper {
     position: relative;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 
   // Stats Row
@@ -543,9 +568,15 @@
   }
 
   .transmission-history {
-    margin-top: 12px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 16px;
+    padding: 10px;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow: visible;
 
     .history-header {
       font-size: 10px;
@@ -562,6 +593,7 @@
     table-layout: fixed;
     width: 100%;
     display: table;
+    overflow: visible;
 
     td,
     th {
@@ -635,6 +667,7 @@
 // Control Panel - Grid Layout like Flutter
 .rdio-control {
   padding: 5px;
+  flex-shrink: 0;
 
   .control-grid {
     display: grid;
@@ -695,6 +728,11 @@
           border-color: #00e676;
           color: #00e676;
           mat-icon { color: #00e676; }
+        }
+        &.playback {
+          border-color: #ffea00;
+          color: #ffea00;
+          mat-icon { color: #ffea00; }
         }
       }
 

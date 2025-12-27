@@ -2,12 +2,35 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay" *ngIf="resultsPending">
         <div class="loading-content">
-            <mat-spinner [diameter]="40"></mat-spinner>
-            <span>Loading calls...</span>
+            <mat-spinner [diameter]="48"></mat-spinner>
+            <span class="loading-text">Searching for calls...</span>
+            <span class="loading-subtext">Please wait</span>
         </div>
     </div>
 
-    <mat-table [dataSource]="results">
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!resultsPending && playbackList && playbackList.count === 0">
+        <div class="empty-state-content">
+            <mat-icon class="empty-icon">search_off</mat-icon>
+            <h3>No calls found</h3>
+            <p>Try adjusting your search filters or selecting a different date range.</p>
+            <button mat-raised-button color="primary" class="reset-filters-btn" (click)="resetForm()">
+                <mat-icon>refresh</mat-icon>
+                Reset Filters
+            </button>
+        </div>
+    </div>
+
+    <!-- Initial State (before first search) -->
+    <div class="empty-state" *ngIf="!resultsPending && !playbackList">
+        <div class="empty-state-content">
+            <mat-icon class="empty-icon">history</mat-icon>
+            <h3>Search Call History</h3>
+            <p>Select your filters above and results will appear here.</p>
+        </div>
+    </div>
+
+    <mat-table [dataSource]="results" [class.hidden-table]="!resultsPending && (!playbackList || playbackList.count === 0)">
         <ng-container matColumnDef="control">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let row">
@@ -84,6 +107,15 @@
     </div>
 </mat-card>
 <mat-card class="rdio-filters">
+    <div class="filters-header">
+        <h3 class="filters-title">
+            <mat-icon>filter_list</mat-icon>
+            Search Filters
+        </h3>
+        <span class="active-filters-badge" *ngIf="getActiveFiltersCount() > 0">
+            {{ getActiveFiltersCount() }} active
+        </span>
+    </div>
     <form autocomplete="off" [formGroup]="form">
         <div class="filter-row">
             <button type="button" class="compact-button" [matMenuTriggerFor]="sortMenu">

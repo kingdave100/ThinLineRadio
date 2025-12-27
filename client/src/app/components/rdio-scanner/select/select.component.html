@@ -60,21 +60,30 @@
         <p>Use the star buttons on talkgroups to add them to favorites</p>
       </div>
 
-      <div *ngIf="getAllFavoriteTalkgroupsFlat().length > 0" class="favorites-grid-container">
-        <div class="talkgroup-grid">
-          <div *ngFor="let item of getAllFavoriteTalkgroupsFlat()"
-               class="talkgroup-chip"
-               [class.enabled]="isTalkgroupEnabled(item.system.id, item.talkgroup.id)"
-               (click)="toggleTalkgroup(item.system.id, item.talkgroup.id)">
-            <div class="chip-content">
-              <div class="chip-system">{{ item.system.label }}</div>
-              <div class="chip-label">{{ item.talkgroup.label }}</div>
-              <div *ngIf="item.talkgroup.name && item.talkgroup.name !== item.talkgroup.label" class="chip-name">{{ item.talkgroup.name }}</div>
-              <div class="chip-id">ID: {{ item.talkgroup.id }}</div>
+      <div *ngIf="getAllFavoriteTalkgroupsFlat().length > 0" class="favorites-grouped-container">
+        <div *ngFor="let group of getFavoriteTalkgroupsByGroup()" class="favorite-group">
+          <div class="favorite-group-header" (click)="toggleFavoriteGroup(group.groupName)">
+            <mat-icon class="expand-icon">{{ isFavoriteGroupExpanded(group.groupName) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+            <span class="group-name">{{ group.groupName }}</span>
+            <span class="group-count">{{ group.talkgroups.length }}</span>
+          </div>
+          <div *ngIf="isFavoriteGroupExpanded(group.groupName)" class="favorite-group-content">
+            <div class="talkgroup-grid">
+              <div *ngFor="let item of group.talkgroups"
+                   class="talkgroup-chip"
+                   [class.enabled]="isTalkgroupEnabled(item.system.id, item.talkgroup.id)"
+                   (click)="toggleTalkgroup(item.system.id, item.talkgroup.id)">
+                <div class="chip-content">
+                  <div class="chip-system">{{ item.system.label }}</div>
+                  <div class="chip-label">{{ item.talkgroup.label }}</div>
+                  <div *ngIf="item.talkgroup.name && item.talkgroup.name !== item.talkgroup.label" class="chip-name">{{ item.talkgroup.name }}</div>
+                  <div class="chip-id">ID: {{ item.talkgroup.id }}</div>
+                </div>
+                <button class="favorite-toggle chip-favorite" (click)="toggleFavoriteTalkgroup(item.system.id, item.talkgroup.id, $event)">
+                  <mat-icon>star</mat-icon>
+                </button>
+              </div>
             </div>
-            <button class="favorite-toggle chip-favorite" (click)="toggleFavoriteTalkgroup(item.system.id, item.talkgroup.id, $event)">
-              <mat-icon>star</mat-icon>
-            </button>
           </div>
         </div>
       </div>

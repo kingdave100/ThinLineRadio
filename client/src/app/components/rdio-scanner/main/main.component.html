@@ -79,8 +79,12 @@
     <!-- Talkgroup Container - Flutter Style -->
     <div class="talkgroup-container">
         <div class="talkgroup-label">
-            Talkgroup
-            <span class="patch-badge" *ngIf="(call?.patches?.length || 0) > 0">PATCHED</span>
+            <span class="patch-badge"
+                  *ngIf="((call || callPrevious)?.patches?.length || 0) > 0"
+                  [matTooltip]="getPatchedTalkgroupsTooltip()"
+                  matTooltipPosition="below">
+                PATCHED ({{ (call || callPrevious)?.patches?.length }})
+            </span>
         </div>
         <div class="talkgroup-box" [ngClass]="getTalkgroupBoxColor()" [style.color]="getTalkgroupTextColor()">
             <div class="talkgroup-info">
@@ -96,7 +100,7 @@
     <!-- Frequency/Time Row -->
     <div class="row">
         <div>
-            <span>F {{ formatFrequencyMHz((call || callPrevious)?.frequency) }}</span>
+            <span>{{ formatFrequencyMHz((call || callPrevious)?.frequency) }}</span>
         </div>
         <div></div>
         <div>
@@ -171,9 +175,9 @@
     <div class="control-grid">
         <!-- Row 1: Main Live Feed Controls -->
         <button class="rdio-button live-feed"
-                [ngClass]="{ active: livefeedOnline, inactive: livefeedOffline && !playbackMode }"
+                [ngClass]="{ active: livefeedOnline, inactive: livefeedOffline && !playbackMode, playback: playbackMode }"
                 (click)="livefeed()">
-            <mat-icon>{{ livefeedOnline ? 'radio' : 'radio_button_unchecked' }}</mat-icon>
+            <mat-icon>radio</mat-icon>
             <span>LIVE FEED</span>
         </button>
 
