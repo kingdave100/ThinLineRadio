@@ -1211,7 +1211,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
         const mhz = frequency / 1000000;
         const parts = mhz.toFixed(7).split('.');
         const integerPart = parts[0].padStart(3, '0');
-        const decimalPart = parts[1];
+        const decimalPart = parts[1].replace(/0+$/, ''); // Remove trailing zeros
         return `${integerPart}.${decimalPart} MHz`;
     }
 

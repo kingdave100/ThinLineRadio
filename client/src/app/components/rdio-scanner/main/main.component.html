@@ -36,7 +36,6 @@
         <div class="led" [ngClass]="getLeftLedStyle()"></div>
         <span class="led-text" [style.color]="getLeftLedTextColor()">{{ getLeftLedText() }}</span>
     </div>
-    <div class="branding">{{ branding || 'ThinLine Radio' }}</div>
     <div class="right-status-container">
         <div class="led right-led" [ngClass]="getRightLedStyle()" [style.background-color]="getRightLedColor()" [style.box-shadow]="getRightLedBoxShadow()"></div>
     </div>
@@ -80,27 +79,8 @@
         </div>
     </div>
 
-    <!-- Scanning Animation (shown when live feed is on and nothing is playing) -->
-    <div class="scanning-container" *ngIf="showScanningAnimation">
-        <div class="scanning-animation">
-            <div class="scanning-text">
-                <span class="scanning-label">SCANNING</span>
-                <div class="scanning-dots">
-                    <span class="dot dot1">.</span>
-                    <span class="dot dot2">.</span>
-                    <span class="dot dot3">.</span>
-                </div>
-            </div>
-            <div class="current-system" *ngIf="getCurrentScanningSystem()">
-                <div class="system-name">
-                    {{ getCurrentScanningSystem() }}
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Talkgroup Container - Flutter Style -->
-    <div class="talkgroup-container" *ngIf="!showScanningAnimation">
+    <div class="talkgroup-container">
         <div class="talkgroup-label">Talkgroup</div>
         <div class="talkgroup-box" [ngClass]="getTalkgroupBoxColor()" [style.color]="getTalkgroupTextColor()">
             <div class="talkgroup-name" [style.color]="getTalkgroupTextColor()">{{ callTalkgroup || callTalkgroupName }}</div>
@@ -113,11 +93,11 @@
     <!-- Frequency/Time Row -->
     <div class="row">
         <div>
-            <span>F {{ formatFrequencyMHz(call?.frequency) }}</span>
+            <span>F {{ formatFrequencyMHz((call || callPrevious)?.frequency) }}</span>
         </div>
         <div></div>
         <div>
-            <span>{{ call?.dateTime | date:timeFormat }}</span>
+            <span>{{ (call || callPrevious)?.dateTime | date:timeFormat }}</span>
         </div>
     </div>
 
