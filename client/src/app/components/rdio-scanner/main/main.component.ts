@@ -64,13 +64,13 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
     call: RdioScannerCall | undefined;
     callDate: Date | undefined;
-    callError = '0';
+    callError = '';
     callFrequency: string = this.formatFrequency(0);
     callHistory: RdioScannerCall[] = new Array<RdioScannerCall>(10);
     callPrevious: RdioScannerCall | undefined;
     callProgress = new Date(0, 0, 0, 0, 0, 0);
     callQueue = 0;
-    callSpike = '0';
+    callSpike = '';
     callSystem = 'System';
     callTag = 'Tag';
     callTalkgroup = 'Talkgroup';
@@ -1170,11 +1170,13 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
             if (Array.isArray(this.call.frequencies) && this.call.frequencies.length) {
                 const frequency = this.call.frequencies.reduce((p, v) => (v.pos || 0) <= time ? v : p, {});
 
-                this.callError = typeof frequency.errorCount === 'number' ? `${frequency.errorCount}` : '';
+                // Only show error count if it's a number and greater than 0
+                this.callError = (typeof frequency.errorCount === 'number' && frequency.errorCount > 0) ? `${frequency.errorCount}` : '';
 
                 this.callFrequency = this.formatFrequency(typeof frequency.freq === 'number' ? frequency.freq : this.call.frequency);
 
-                this.callSpike = typeof frequency.spikeCount === 'number' ? `${frequency.spikeCount}` : '';
+                // Only show spike count if it's a number and greater than 0
+                this.callSpike = (typeof frequency.spikeCount === 'number' && frequency.spikeCount > 0) ? `${frequency.spikeCount}` : '';
 
             } else {
                 this.callError = '';
