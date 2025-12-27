@@ -38,6 +38,7 @@ import { RdioScannerSupportComponent } from './support/support.component';
 import { AlertsService } from '../alerts/alerts.service';
 import { RdioScannerAlert } from '../rdio-scanner';
 import { SettingsService } from '../settings/settings.service';
+import { FavoritesService } from '../favorites.service';
 
 @Component({
     standalone: false,
@@ -250,6 +251,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
     recentAlerts: RdioScannerAlert[] = [];
     loadingAlerts = false;
     private alertsSubscription: Subscription | undefined;
+    private favoritesSubscription: Subscription | undefined;
 
     // Subscription management
     showCheckout = false;
@@ -268,6 +270,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
         private tagColorService: TagColorService,
         private alertsService: AlertsService,
         private settingsService: SettingsService,
+        private favoritesService: FavoritesService,
     ) {
         this.authForm = this.ngFormBuilder.group<{
             password: string | null;
@@ -402,6 +405,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
         this.eventSubscription.unsubscribe();
         this.alertsSubscription?.unsubscribe();
+        this.favoritesSubscription?.unsubscribe();
     }
 
     checkSubscriptionStatus(): void {
@@ -629,10 +633,10 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
     ngOnInit(): void {
         this.syncClock();
-        
+
         // Initial load - fetch new alerts incrementally
         this.loadRecentAlerts();
-        
+
         // Subscribe to shared alerts service for automatic updates
         this.alertsService.alerts$.subscribe(alerts => {
             // Update recent alerts from cache
@@ -640,7 +644,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
                 .sort((a: RdioScannerAlert, b: RdioScannerAlert) => (b.createdAt || 0) - (a.createdAt || 0))
                 .slice(0, 20);
         });
-        
+
         // Listen for new alerts via WebSocket
         this.alertsSubscription = this.rdioScannerService.event.subscribe((event: any) => {
             if (event.alert) {
@@ -648,7 +652,13 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
                 this.loadRecentAlerts();
             }
         });
-        
+
+        // Subscribe to favorites changes
+        this.favoritesSubscription = this.favoritesService.getFavorites().subscribe(() => {
+            // Update favorite status when favorites change
+            this.updateFavoriteStatus();
+        });
+
         // Note: Subscription check is handled in the event handler when config is received
         // No need to check here since config always arrives via WebSocket event handler
 
@@ -971,21 +981,34 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
         return '#fff'; // Default white
     }
 
+    private updateFavoriteStatus(): void {
+        if (this.call?.system && this.call?.talkgroup) {
+            this.isFavorite = this.favoritesService.isTalkgroupFavorite(
+                this.call.system,
+                this.call.talkgroup
+            );
+        } else {
+            this.isFavorite = false;
+        }
+    }
+
     toggleFavorite(): void {
         if (this.auth) {
             this.authFocus();
             return;
         }
 
-        if (!this.callSystem || !this.callTalkgroup || !this.callTalkgroupId) {
+        if (!this.call?.system || !this.call?.talkgroup) {
             return;
         }
 
-        // Toggle favorite state
-        this.isFavorite = !this.isFavorite;
-        
-        // TODO: Implement actual favorite service integration
-        // For now, this is just a UI toggle
+        // Toggle favorite using the service
+        this.favoritesService.toggleFavorite({
+            type: 'talkgroup',
+            systemId: this.call.system,
+            talkgroupId: this.call.talkgroup
+        });
+
         this.rdioScannerService.beep();
     }
 
@@ -1054,8 +1077,11 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
                 this.call = event.call;
 
                 this.updateDimmer();
+
+                // Update favorite status when call changes
+                this.updateFavoriteStatus();
             }
-            
+
             // Update scanning animation based on call state
             this.updateScanningAnimation();
         }

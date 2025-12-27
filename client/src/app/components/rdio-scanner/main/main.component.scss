@@ -442,14 +442,9 @@
       border-radius: var(--radius-md);
       min-height: 50px;
       box-shadow: var(--elevation-1);
-      transition: all var(--transition-normal);
 
       // No background by default - transparent
       background: transparent;
-
-      &:hover {
-        box-shadow: var(--elevation-2);
-      }
 
       // Text colors now come from TagColorService via inline styles
       // Colors will be applied via [style.color] in the template
@@ -643,10 +638,10 @@
 
   .control-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 4px;
 
-    // Now we have 12 buttons in 3 rows of 4
+    // Now we have 9 buttons in 3 rows of 3
 
     .rdio-button {
       display: flex;

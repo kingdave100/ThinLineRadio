@@ -49,7 +49,7 @@
             <span *ngIf="!linked">NO LINK</span>
         </div>
         <div>
-            <span>Queue {{ callQueue }}</span>
+            <span>Q {{ callQueue }}</span>
         </div>
     </div>
     <div class="row small"></div>
@@ -169,7 +169,7 @@
 <!-- Control Panel - Grid Layout like Flutter -->
 <div class="rdio-control">
     <div class="control-grid">
-        <!-- Row 1: Live Feed, Pause, Replay Last, Skip Next -->
+        <!-- Row 1: Main Live Feed Controls -->
         <button class="rdio-button live-feed"
                 [ngClass]="{ active: livefeedOnline, inactive: livefeedOffline && !playbackMode }"
                 (click)="livefeed()">
@@ -184,34 +184,15 @@
             <span>{{ livefeedPaused ? 'RESUME' : 'PAUSE' }}</span>
         </button>
 
-        <button class="rdio-button replay" (click)="replay()">
-            <mat-icon>replay</mat-icon>
-            <span>REPLAY</span>
-        </button>
-
         <button class="rdio-button skip-next" (click)="skip()">
             <mat-icon>skip_next</mat-icon>
             <span>SKIP</span>
         </button>
 
-        <!-- Row 2: Avoid Talkgroup, Add Favorite, Hold System, Hold Talkgroup -->
+        <!-- Row 2: Filtering and Replay Controls -->
         <button class="rdio-button avoid" (click)="avoid()">
             <mat-icon>block</mat-icon>
             <span>AVOID</span>
-        </button>
-
-        <button class="rdio-button favorite"
-                [ngClass]="{ active: isFavorite }"
-                (click)="toggleFavorite()">
-            <mat-icon>{{ isFavorite ? 'star' : 'star_border' }}</mat-icon>
-            <span>FAVORITE</span>
-        </button>
-
-        <button class="rdio-button hold-sys"
-                [ngClass]="{ active: holdSys }"
-                (click)="holdSystem()">
-            <mat-icon>keyboard_arrow_down</mat-icon>
-            <span>HOLD SYS</span>
         </button>
 
         <button class="rdio-button hold-tg"
@@ -221,25 +202,25 @@
             <span>HOLD TG</span>
         </button>
 
-        <!-- Row 3: Playback, Alerts, Settings, Channel Select -->
+        <button class="rdio-button replay" (click)="replay()">
+            <mat-icon>replay</mat-icon>
+            <span>REPLAY</span>
+        </button>
+
+        <!-- Row 3: Advanced Features -->
         <button class="rdio-button playback" (click)="showSearchPanel()">
             <mat-icon>play_circle</mat-icon>
             <span>PLAYBACK</span>
         </button>
 
-        <button class="rdio-button alerts" (click)="showAlertsPanel()">
-            <mat-icon>notifications</mat-icon>
-            <span>ALERTS</span>
+        <button class="rdio-button channel-select" (click)="showSelectPanel()">
+            <mat-icon>tune</mat-icon>
+            <span>CHANNELS</span>
         </button>
 
         <button class="rdio-button settings" (click)="showSettingsPanel()">
             <mat-icon>settings</mat-icon>
             <span>SETTINGS</span>
-        </button>
-
-        <button class="rdio-button channel-select" (click)="showSelectPanel()">
-            <mat-icon>tune</mat-icon>
-            <span>CHANNELS</span>
         </button>
     </div>
     

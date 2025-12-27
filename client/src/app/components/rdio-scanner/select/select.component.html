@@ -4,10 +4,11 @@
     <!-- Search Bar -->
     <div class="search-bar" [class.focused]="isSearchFocused">
       <mat-icon class="search-icon">search</mat-icon>
-      <input 
-        type="text" 
+      <input
+        type="text"
         placeholder="Search talkgroups, systems, or IDs..."
         [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange()"
         (focus)="isSearchFocused = true"
         (blur)="isSearchFocused = false"
         class="search-input">

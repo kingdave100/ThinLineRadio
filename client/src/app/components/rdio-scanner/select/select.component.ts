@@ -117,6 +117,50 @@ export class RdioScannerSelectComponent implements OnDestroy, OnInit {
 
     clearSearch(): void {
         this.searchQuery = '';
+        this.onSearchChange();
+    }
+
+    onSearchChange(): void {
+        if (!this.searchQuery || !this.systems) {
+            // If search is cleared, collapse all
+            this.expandedSystems.clear();
+            this.expandedTags.clear();
+            return;
+        }
+
+        // Auto-expand systems and tags that have matching results
+        const query = this.searchQuery.toLowerCase();
+
+        this.systems.forEach(system => {
+            // Check if any talkgroups in this system match the search
+            const matchingTalkgroups = (system.talkgroups || []).filter(tg => {
+                const label = (tg.label || '').toLowerCase();
+                const name = (tg.name || '').toLowerCase();
+                const id = tg.id.toString();
+                return label.includes(query) || name.includes(query) || id.includes(query);
+            });
+
+            if (matchingTalkgroups.length > 0) {
+                // Expand this system
+                this.expandedSystems.set(system.id, true);
+
+                // Group matching talkgroups by tag and expand those tags
+                const tagGroups = new Map<string, RdioScannerTalkgroup[]>();
+                matchingTalkgroups.forEach(tg => {
+                    const tag = tg.tag || 'Untagged';
+                    if (!tagGroups.has(tag)) {
+                        tagGroups.set(tag, []);
+                    }
+                    tagGroups.get(tag)!.push(tg);
+                });
+
+                // Expand each tag that has matching talkgroups
+                tagGroups.forEach((_talkgroups, tag) => {
+                    const tagKey = `${system.id}-${tag}`;
+                    this.expandedTags.set(tagKey, true);
+                });
+            }
+        });
     }
 
     getVisibleSystems(): RdioScannerSystem[] {
