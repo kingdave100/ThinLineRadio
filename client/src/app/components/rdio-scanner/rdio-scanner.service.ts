@@ -83,7 +83,7 @@ export class RdioScannerService implements OnDestroy {
     private audioSource: AudioBufferSourceNode | undefined;
     private audioGainNode: GainNode | undefined;
     private audioAnalyser: AnalyserNode | undefined;
-    private audioAnalyserData: Uint8Array | undefined;
+    private audioAnalyserData: Uint8Array<ArrayBuffer> | undefined;
     private audioSourceStartTime = NaN;
     private volume = 1.0; // Volume level (0.0 to 1.0)
 
@@ -909,6 +909,30 @@ export class RdioScannerService implements OnDestroy {
     // Get current volume (0.0 to 1.0)
     getVolume(): number {
         return this.volume;
+    }
+
+    // Get current audio level from analyser (0-12 scale for VU meter)
+    getAudioLevel(): number {
+        if (!this.audioAnalyser || !this.audioAnalyserData) {
+            return 0;
+        }
+
+        // Get frequency data from analyser
+        this.audioAnalyser.getByteFrequencyData(this.audioAnalyserData);
+
+        // Calculate average amplitude across all frequencies
+        let sum = 0;
+        for (let i = 0; i < this.audioAnalyserData.length; i++) {
+            sum += this.audioAnalyserData[i];
+        }
+        const average = sum / this.audioAnalyserData.length;
+
+        // Convert 0-255 range to 0-12 scale for VU meter
+        // Apply some scaling to make it more visually interesting
+        const normalized = average / 255;
+        const scaled = Math.pow(normalized, 0.7) * 12; // Power curve for better visualization
+
+        return Math.floor(scaled);
     }
 
     // Public method to force initialize audio (for PWA auto-start)

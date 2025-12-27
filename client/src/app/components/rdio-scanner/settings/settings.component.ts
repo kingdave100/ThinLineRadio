@@ -51,20 +51,10 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
     loadingAccount: boolean = false;
 
     // Forms
-    emailForm: FormGroup;
     passwordForm: FormGroup;
-    emailVerificationForm: FormGroup;
     passwordVerificationForm: FormGroup;
-    updatingEmail: boolean = false;
     updatingPassword: boolean = false;
-    
-    // Email change verification state
-    emailChangeVerified: boolean = false;
-    requestingVerification: boolean = false;
-    verificationCodeSent: boolean = false;
-    verifyingCode: boolean = false;
-    emailChangeCode: string = '';
-    
+
     // Password change verification state
     passwordChangeVerified: boolean = false;
     requestingPasswordVerification: boolean = false;
@@ -81,16 +71,6 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
         private fb: FormBuilder,
         private snackBar: MatSnackBar,
     ) {
-        this.emailForm = this.fb.group({
-            newEmail: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required]],
-            code: ['', [Validators.required]], // Email change verification code
-        });
-
-        this.emailVerificationForm = this.fb.group({
-            code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
-        });
-
         this.passwordVerificationForm = this.fb.group({
             code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
         });
@@ -281,135 +261,17 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
         }
 
         const headers = this.getAuthHeaders();
-        this.http.get<any>('/api/account', { 
+        this.http.get<any>('/api/account', {
             headers,
             params: { pin: encodeURIComponent(pin) }
         }).subscribe({
             next: (account) => {
                 this.accountInfo = account;
-                this.emailForm.patchValue({ newEmail: account.email });
                 this.loadingAccount = false;
             },
             error: (error) => {
                 console.error('Error loading account info:', error);
                 this.loadingAccount = false;
-            },
-        });
-    }
-
-    requestEmailChangeVerification(): void {
-        this.requestingVerification = true;
-        const pin = this.getPin();
-        if (!pin) {
-            this.snackBar.open('Please log in to change your email', 'Close', { duration: 3000 });
-            this.requestingVerification = false;
-            return;
-        }
-
-        const headers = this.getAuthHeaders();
-        this.http.post<any>('/api/account/email/request-verification', {}, {
-            headers,
-            params: { pin: encodeURIComponent(pin) }
-        }).subscribe({
-            next: () => {
-                this.snackBar.open('Verification code sent to your email', 'Close', { duration: 5000 });
-                this.requestingVerification = false;
-                this.verificationCodeSent = true;
-            },
-            error: (error) => {
-                const message = error.error?.error || 'Failed to send verification code';
-                this.snackBar.open(message, 'Close', { duration: 5000 });
-                this.requestingVerification = false;
-                this.verificationCodeSent = false;
-            },
-        });
-    }
-
-    verifyEmailChangeCode(): void {
-        if (this.emailVerificationForm.invalid) {
-            return;
-        }
-
-        this.verifyingCode = true;
-        const pin = this.getPin();
-        if (!pin) {
-            this.snackBar.open('Please log in to verify your email', 'Close', { duration: 3000 });
-            this.verifyingCode = false;
-            return;
-        }
-
-        const headers = this.getAuthHeaders();
-        this.http.post<any>('/api/account/email/verify-code', this.emailVerificationForm.value, {
-            headers,
-            params: { pin: encodeURIComponent(pin) }
-        }).subscribe({
-            next: (response) => {
-                if (response.verified) {
-                    this.emailChangeVerified = true;
-                    this.emailChangeCode = this.emailVerificationForm.value.code;
-                    this.emailForm.patchValue({ code: this.emailChangeCode });
-                    this.verificationCodeSent = false; // Reset after successful verification
-                    this.snackBar.open('Email verified. You can now change your email address.', 'Close', { duration: 5000 });
-                }
-                this.verifyingCode = false;
-            },
-            error: (error) => {
-                const message = error.error?.error || 'Invalid verification code';
-                this.snackBar.open(message, 'Close', { duration: 5000 });
-                this.verifyingCode = false;
-            },
-        });
-    }
-
-    updateEmail(): void {
-        if (this.emailForm.invalid) {
-            return;
-        }
-
-        if (!this.emailChangeVerified) {
-            this.snackBar.open('Please verify your current email first', 'Close', { duration: 3000 });
-            return;
-        }
-
-        this.updatingEmail = true;
-        const pin = this.getPin();
-        if (!pin) {
-            this.snackBar.open('Please log in to update your email', 'Close', { duration: 3000 });
-            this.updatingEmail = false;
-            return;
-        }
-
-        const formValue = this.emailForm.value;
-        formValue.code = this.emailChangeCode; // Include verification code
-
-        const headers = this.getAuthHeaders();
-        this.http.post<any>('/api/account/email', formValue, {
-            headers,
-            params: { pin: encodeURIComponent(pin) }
-        }).subscribe({
-            next: (response) => {
-                if (response.requiresVerification) {
-                    this.snackBar.open('Email change initiated. Please check your new email for verification.', 'Close', { duration: 7000 });
-                    // Reset forms and state
-                    this.emailChangeVerified = false;
-                    this.emailChangeCode = '';
-                    this.emailForm.reset();
-                    this.emailVerificationForm.reset();
-                    // Reload account info
-                    this.loadAccountInfo();
-                } else {
-                    this.snackBar.open('Email updated successfully', 'Close', { duration: 3000 });
-                    this.accountInfo.email = response.email;
-                    this.emailForm.reset({ newEmail: response.email });
-                    this.emailChangeVerified = false;
-                    this.emailChangeCode = '';
-                }
-                this.updatingEmail = false;
-            },
-            error: (error) => {
-                const message = error.error?.error || 'Failed to update email';
-                this.snackBar.open(message, 'Close', { duration: 5000 });
-                this.updatingEmail = false;
             },
         });
     }

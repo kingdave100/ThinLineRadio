@@ -1384,13 +1384,11 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
     /**
      * Calculate audio level for VU meter display (0-12 scale)
      * Returns 0-12 where:
-     * - 0-8: Normal levels (green)
-     * - 9-10: High levels (yellow)
-     * - 11-12: Peak levels (red)
+     * - 0-8: Normal levels
+     * - 9-10: High levels
+     * - 11-12: Peak levels
      *
-     * Currently shows simulated audio levels during playback.
-     * This can be enhanced with Web Audio API AnalyserNode for real-time
-     * audio level analysis.
+     * Uses Web Audio API AnalyserNode for real-time audio level analysis.
      */
     private calculateAudioLevel(): number {
         const call = this.call || this.callPrevious;
@@ -1400,32 +1398,8 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
             return 0;
         }
 
-        // Use high-precision timestamp for smoother animation
-        const time = performance.now() / 1000; // Convert to seconds
-
-        // Create a pseudo-random but smooth audio level
-        // Multiple sine waves at different frequencies create realistic variation
-
-        // Base level varies between 6-9 (normal speech levels)
-        const baseLevel = 6 + (Math.sin(time * 2.8) * 1.5);
-
-        // Add some variation (peaks and valleys)
-        const variation = Math.sin(time * 7.3) * 2;
-
-        // Secondary variation for more natural movement
-        const microVariation = Math.sin(time * 13.7) * 0.8;
-
-        // Occasional peaks that hit higher zones
-        const peakModulation = Math.sin(time * 1.3) > 0.75 ? 2 : 0;
-
-        // Calculate final level
-        let level = baseLevel + variation + microVariation + peakModulation;
-
-        // Clamp to 0-12 range
-        level = Math.max(0, Math.min(12, level));
-
-        // Round to integer
-        return Math.floor(level);
+        // Get real-time audio level from the service's analyser
+        return this.rdioScannerService.getAudioLevel();
     }
 
     getAudioLevel(): number {
