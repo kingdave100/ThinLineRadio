@@ -1061,8 +1061,9 @@ export class RdioScannerService implements OnDestroy {
         // Always use the root endpoint for WebSocket, regardless of current page URL
         // This ensures the WebSocket connects to the correct endpoint even if user is on /verify or other pages
         // TODO: fix this lol
-        //const websocketUrl = window.location.origin.replace(/^http/, 'ws');
-        const websocketUrl = 'ws://192.168.6.67:3000';
+        const websocketUrl = window.location.origin.replace(/^http/, 'ws').replace(/:\d+$/, '') + ':3000';
+
+        //const websocketUrl = 'ws://192.168.6.67:3000';
         try {
             this.websocket = new WebSocket(websocketUrl);
 
