@@ -43,7 +43,7 @@
     <!-- Stats Row -->
     <div class="row three">
         <div>
-            <span>{{ clock | date:timeFormat }}</span>
+            <span>{{ clock | date:clockFormat }}</span>
         </div>
         <div>
             <span *ngIf="!linked">NO LINK</span>
