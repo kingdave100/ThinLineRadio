@@ -46,16 +46,33 @@ export class TagColorService implements OnDestroy {
         '1': '#ff1744',      // Fire - Red
         '2': '#2979ff',      // Law - Blue
         '3': '#00e676',      // Public Works - Green
-        '4': '#fff',         // EMS - White
+        '4': '#00e5ff',      // EMS - Cyan
         '5': '#ff9100',      // TAC - Orange
         '6': '#9e9e9e',      // Corrections - Gray
+        // Tag label defaults (case-insensitive keys)
+        'corrections': '#ff9100',           // Orange
+        'ems dispatch': '#00e5ff',          // Cyan
+        'emergency ops': '#d500f9',         // Magenta
+        'fire-tac': '#ff1744',              // Red
+        'fire-talk': '#ff1744',             // Red
+        'hospital': '#00e5ff',              // Cyan
+        'interop': '#ffea00',               // Yellow
+        'law dispatch': '#2979ff',          // Blue
+        'law tac': '#2979ff',               // Blue
+        'law talk': '#2979ff',              // Blue
+        'public works': '#00e676',          // Green
+        'schools': '#ffea00',               // Yellow
+        'security': '#00e5ff',              // Cyan
+        'transportation': '#00e676',        // Green
+        'untagged': '#9e9e9e',              // Gray
+        // LED color name defaults
         'green': '#00e676',
         'blue': '#2979ff',
         'cyan': '#00e5ff',
         'magenta': '#d500f9',
         'orange': '#ff9100',
         'red': '#ff1744',
-        'white': '#fff',
+        'white': '#9e9e9e',
         'yellow': '#ffea00',
     };
 
@@ -153,8 +170,8 @@ export class TagColorService implements OnDestroy {
                 if (this.defaultColors[tagKey]) {
                     updatedColors[tagKey] = this.defaultColors[tagKey];
                 } else {
-                    // New tag without a default - use white as fallback
-                    updatedColors[tagKey] = '#fff';
+                    // New tag without a default - use gray as fallback
+                    updatedColors[tagKey] = '#9e9e9e';
                 }
                 hasChanges = true;
             }
@@ -171,7 +188,7 @@ export class TagColorService implements OnDestroy {
     }
 
     getTagColor(tag: string | number | null | undefined): string {
-        if (!tag) return '#fff';
+        if (!tag) return '#9e9e9e';
         
         const tagKey = tag.toString().toLowerCase();
         
@@ -206,7 +223,7 @@ export class TagColorService implements OnDestroy {
         if (lowerTag.includes('fire')) return this.tagColors['fire'] || this.defaultColors['red'] || '#ff1744';
         if (lowerTag.includes('law') || lowerTag.includes('police')) return this.tagColors[lowerTag] || this.defaultColors['blue'] || '#2979ff';
         if (lowerTag.includes('public works') || lowerTag.includes('works')) return this.tagColors[lowerTag] || this.defaultColors['green'] || '#00e676';
-        if (lowerTag.includes('ems') || lowerTag.includes('medical')) return this.tagColors[lowerTag] || this.defaultColors['white'] || '#fff';
+        if (lowerTag.includes('ems') || lowerTag.includes('medical')) return this.tagColors[lowerTag] || this.defaultColors['cyan'] || '#00e5ff';
         if (lowerTag.includes('tac')) return this.tagColors[lowerTag] || this.defaultColors['orange'] || '#ff9100';
         if (lowerTag.includes('jail') || lowerTag.includes('correction')) return this.tagColors[lowerTag] || this.defaultColors['gray'] || '#9e9e9e';
 
@@ -215,8 +232,8 @@ export class TagColorService implements OnDestroy {
             return this.defaultColors[tagKey];
         }
 
-        // Default to white if nothing matches
-        return '#fff';
+        // Default to gray if nothing matches
+        return '#9e9e9e';
     }
 
     setTagColor(tag: string, color: string): void {

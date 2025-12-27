@@ -906,45 +906,51 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
     getRightLedStyle(): string {
         // Right LED uses talkgroup tag colors
+        // Only show as "on" when dimmer is active (transmission is playing)
         const call = this.call || this.callPrevious;
-        
-        if (call) {
+
+        if (call && this.dimmer) {
             // Get the tag color
             let tagColor = '#fff'; // Default white
-            
+
             if (call.tagData?.led) {
                 tagColor = this.tagColorService.getTagColor(call.tagData.led);
             } else if (call.talkgroupData?.tag) {
                 tagColor = this.tagColorService.getTagColor(call.talkgroupData.tag);
             }
-            
+
             // Map hex color to a CSS class name for the LED
             // We'll use inline style for the right LED since colors come from settings
             return 'on'; // Base class, color applied via inline style
         }
-        
-        return 'on'; // Default
+
+        return ''; // LED off (dim) when no active transmission
     }
 
     getRightLedColor(): string {
         // Get the actual color value for the right LED based on talkgroup tag
+        // Only show color when dimmer is active (transmission is playing)
         const call = this.call || this.callPrevious;
-        
-        if (call) {
+
+        if (call && this.dimmer) {
             if (call.tagData?.led) {
                 return this.tagColorService.getTagColor(call.tagData.led);
             } else if (call.talkgroupData?.tag) {
                 return this.tagColorService.getTagColor(call.talkgroupData.tag);
             }
         }
-        
-        return '#ffffff'; // Default white when no call
+
+        return '#505050'; // Dim gray when no active transmission
     }
 
     getRightLedBoxShadow(): string {
         // Generate box-shadow color to match the LED background color
-        const color = this.getRightLedColor();
-        return `0 0 6px 3px ${color}`;
+        // Only show glow when dimmer is active (transmission is playing)
+        if (this.dimmer) {
+            const color = this.getRightLedColor();
+            return `0 0 6px 3px ${color}`;
+        }
+        return '0 0 3px rgba(0, 0, 0, 0.3)'; // Subtle shadow when dim
     }
 
     getTalkgroupBoxColor(): string {
