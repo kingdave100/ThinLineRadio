@@ -66,7 +66,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
     callDate: Date | undefined;
     callError = '0';
     callFrequency: string = this.formatFrequency(0);
-    callHistory: RdioScannerCall[] = [];
+    callHistory: RdioScannerCall[] = new Array<RdioScannerCall>(10);
     callPrevious: RdioScannerCall | undefined;
     callProgress = new Date(0, 0, 0, 0, 0, 0);
     callQueue = 0;
