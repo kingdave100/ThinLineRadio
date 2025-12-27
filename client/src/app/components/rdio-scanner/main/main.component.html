@@ -34,13 +34,12 @@
 <div class="rdio-status">
     <div class="left-led-container">
         <div class="led" [ngClass]="getLeftLedStyle()"></div>
-        <span class="led-text" [style.color]="getLeftLedTextColor()">{{ getLeftLedText() }}</span>
     </div>
     <div class="right-status-container">
         <div class="led right-led" [ngClass]="getRightLedStyle()" [style.background-color]="getRightLedColor()" [style.box-shadow]="getRightLedBoxShadow()"></div>
     </div>
 </div>
-<div class="rdio-display" [ngClass]="{ idle: !dimmer }" (dblclick)="toggleFullscreen.emit()">
+<div class="rdio-display" [ngClass]="{ idle: !dimmer }">
     <!-- Stats Row -->
     <div class="row three">
         <div>
@@ -48,8 +47,6 @@
         </div>
         <div>
             <span *ngIf="!linked">NO LINK</span>
-            <span *ngIf="linked && showListenersCount">Listeners {{ listeners }}</span>
-            <span *ngIf="linked && !showListenersCount">Listeners --</span>
         </div>
         <div>
             <span>Queue {{ callQueue }}</span>
@@ -134,12 +131,16 @@
                         <th><span>System</span></th>
                         <th><span>Talkgroup</span></th>
                         <th><span>Name</span></th>
-                        <th><span>Frequency</span></th>
+                        <th><span>Length</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let previousCall of callHistory"
-                        [ngClass]="{ 'replaying': previousCall?.id !== null && previousCall?.id === call?.id} ">
+                        [ngClass]="{
+                            'replaying': previousCall?.id !== null && previousCall?.id === call?.id,
+                            'clickable': previousCall?.id !== null && previousCall?.id !== undefined
+                        }"
+                        (click)="previousCall?.id && playCall(previousCall.id)">
                         <td>
                             <span>{{ previousCall?.dateTime | date:timeFormat }}</span>
                         </td>
@@ -153,7 +154,7 @@
                             <span>{{ previousCall?.talkgroupData?.name || previousCall?.frequency }}</span>
                         </td>
                         <td>
-                            <span>{{ formatFrequencyMHz(previousCall?.frequency) }}</span>
+                            <span>{{ formatCallDuration(previousCall) }}</span>
                         </td>
                     </tr>
                 </tbody>
@@ -166,14 +167,14 @@
 <div class="rdio-control">
     <div class="control-grid">
         <!-- Row 1: Live Feed, Pause, Replay Last, Skip Next -->
-        <button class="rdio-button live-feed" 
+        <button class="rdio-button live-feed"
                 [ngClass]="{ active: livefeedOnline, inactive: livefeedOffline && !playbackMode }"
                 (click)="livefeed()">
             <mat-icon>{{ livefeedOnline ? 'radio' : 'radio_button_unchecked' }}</mat-icon>
-            <span>LIVE<br>FEED</span>
+            <span>LIVE FEED</span>
         </button>
 
-        <button class="rdio-button pause" 
+        <button class="rdio-button pause"
                 [ngClass]="{ active: livefeedPaused }"
                 (click)="pause()">
             <mat-icon>{{ livefeedPaused ? 'play_arrow' : 'pause' }}</mat-icon>
@@ -182,39 +183,39 @@
 
         <button class="rdio-button replay" (click)="replay()">
             <mat-icon>replay</mat-icon>
-            <span>REPLAY<br>LAST</span>
+            <span>REPLAY</span>
         </button>
 
         <button class="rdio-button skip-next" (click)="skip()">
             <mat-icon>skip_next</mat-icon>
-            <span>SKIP<br>NEXT</span>
+            <span>SKIP</span>
         </button>
 
         <!-- Row 2: Avoid Talkgroup, Add Favorite, Hold System, Hold Talkgroup -->
         <button class="rdio-button avoid" (click)="avoid()">
             <mat-icon>block</mat-icon>
-            <span>AVOID<br>TALKGROUP</span>
+            <span>AVOID</span>
         </button>
 
-        <button class="rdio-button favorite" 
+        <button class="rdio-button favorite"
                 [ngClass]="{ active: isFavorite }"
                 (click)="toggleFavorite()">
             <mat-icon>{{ isFavorite ? 'star' : 'star_border' }}</mat-icon>
-            <span>{{ isFavorite ? 'REMOVE' : 'ADD' }}<br>FAVORITE</span>
+            <span>FAVORITE</span>
         </button>
 
-        <button class="rdio-button hold-sys" 
+        <button class="rdio-button hold-sys"
                 [ngClass]="{ active: holdSys }"
                 (click)="holdSystem()">
             <mat-icon>keyboard_arrow_down</mat-icon>
-            <span>HOLD<br>SYSTEM</span>
+            <span>HOLD SYS</span>
         </button>
 
-        <button class="rdio-button hold-tg" 
+        <button class="rdio-button hold-tg"
                 [ngClass]="{ active: holdTg }"
                 (click)="holdTalkgroup()">
             <mat-icon>keyboard_double_arrow_down</mat-icon>
-            <span>HOLD<br>TALKGROUP</span>
+            <span>HOLD TG</span>
         </button>
 
         <!-- Row 3: Playback, Alerts, Settings, Channel Select -->
@@ -235,7 +236,7 @@
 
         <button class="rdio-button channel-select" (click)="showSelectPanel()">
             <mat-icon>tune</mat-icon>
-            <span>CHANNEL<br>SELECT</span>
+            <span>CHANNELS</span>
         </button>
     </div>
     

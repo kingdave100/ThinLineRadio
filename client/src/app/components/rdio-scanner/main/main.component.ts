@@ -1216,6 +1216,27 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
         return `${integerPart}.${decimalPart} MHz`;
     }
 
+    formatCallDuration(call: RdioScannerCall | undefined): string {
+        if (!call?.audio?.data?.length) {
+            return '';
+        }
+
+        // Estimate duration based on audio buffer size
+        // Assuming 8kHz sample rate, 16-bit (2 bytes/sample), mono (1 channel)
+        // This is typical for narrowband radio audio
+        const estimatedDurationSeconds = call.audio.data.length / 16000;
+
+        if (estimatedDurationSeconds < 60) {
+            // Show as seconds for calls under 1 minute
+            return `${estimatedDurationSeconds.toFixed(0)}s`;
+        } else {
+            // Show as mm:ss for longer calls
+            const minutes = Math.floor(estimatedDurationSeconds / 60);
+            const seconds = Math.floor(estimatedDurationSeconds % 60);
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+    }
+
     private getLedColor(call: RdioScannerCall | undefined): string {
         const colors = ['blue', 'cyan', 'green', 'magenta', 'orange', 'red', 'white', 'yellow'];
 
