@@ -619,17 +619,48 @@ export class RdioScannerSelectComponent implements OnDestroy, OnInit {
 
     getFavoriteSystemsWithFavorites(): RdioScannerSystem[] {
         if (!this.systems) return [];
-        
+
         // Get systems that have any favorites (system, tag, or talkgroup favorites)
         const favoriteSystems = new Set<number>();
-        
+
         this.favoriteItems.forEach(fav => {
             if (fav.systemId !== undefined) {
                 favoriteSystems.add(fav.systemId);
             }
         });
-        
+
         return this.systems.filter(s => favoriteSystems.has(s.id));
+    }
+
+    getAllFavoriteTalkgroupsFlat(): Array<{system: RdioScannerSystem, talkgroup: RdioScannerTalkgroup}> {
+        if (!this.systems) return [];
+
+        const favoriteTalkgroups: Array<{system: RdioScannerSystem, talkgroup: RdioScannerTalkgroup}> = [];
+
+        // Get all individually favorited talkgroups
+        const favoriteTalkgroupIds = new Map<number, Set<number>>();
+        this.favoriteItems
+            .filter(f => f.type === 'talkgroup' && f.systemId !== undefined && f.talkgroupId !== undefined)
+            .forEach(f => {
+                if (!favoriteTalkgroupIds.has(f.systemId!)) {
+                    favoriteTalkgroupIds.set(f.systemId!, new Set());
+                }
+                favoriteTalkgroupIds.get(f.systemId!)!.add(f.talkgroupId!);
+            });
+
+        // Build the flat list
+        this.systems.forEach(system => {
+            const systemFavorites = favoriteTalkgroupIds.get(system.id);
+            if (systemFavorites) {
+                (system.talkgroups || []).forEach(tg => {
+                    if (systemFavorites.has(tg.id)) {
+                        favoriteTalkgroups.push({ system, talkgroup: tg });
+                    }
+                });
+            }
+        });
+
+        return favoriteTalkgroups;
     }
 
     getFavoriteTagGroupsForSystem(system: RdioScannerSystem): Array<{tag: string, talkgroups: RdioScannerTalkgroup[]}> {

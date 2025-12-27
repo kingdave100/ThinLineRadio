@@ -78,7 +78,10 @@
 
     <!-- Talkgroup Container - Flutter Style -->
     <div class="talkgroup-container">
-        <div class="talkgroup-label">Talkgroup</div>
+        <div class="talkgroup-label">
+            Talkgroup
+            <span class="patch-badge" *ngIf="(call?.patches?.length || 0) > 0">PATCHED</span>
+        </div>
         <div class="talkgroup-box" [ngClass]="getTalkgroupBoxColor()" [style.color]="getTalkgroupTextColor()">
             <div class="talkgroup-info">
                 <div class="talkgroup-tag" [style.color]="getTalkgroupTextColor()">{{ callTalkgroup }}</div>

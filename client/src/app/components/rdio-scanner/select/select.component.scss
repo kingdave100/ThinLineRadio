@@ -227,11 +227,15 @@
       color: rgba(255, 255, 255, 0.9);
     }
 
-    .favorites-actions {
+    .favorites-count {
       margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(255, 234, 0, 0.15);
+      border: 1px solid rgba(255, 234, 0, 0.3);
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #ffea00;
     }
   }
 
@@ -269,6 +273,10 @@
         color: rgba(255, 255, 255, 0.5);
         margin: 0;
       }
+    }
+
+    .favorites-grid-container {
+      padding: 0 8px;
     }
 
     .favorite-system-card {
@@ -387,29 +395,8 @@
       }
     }
 
-    .system-status {
-      margin-right: 8px;
-
-      mat-icon {
-        width: 18px;
-        height: 18px;
-        font-size: 18px;
-
-        &.status-enabled {
-          color: #00e676;
-        }
-
-        &.status-partial {
-          color: #ff9100;
-        }
-
-        &.status-disabled {
-          color: rgba(255, 255, 255, 0.4);
-        }
-      }
-    }
-
     .system-toggle {
+      margin-left: auto;
       margin-right: 8px;
 
       .toggle-badge {
@@ -442,13 +429,6 @@
           opacity: 0.8;
         }
       }
-    }
-
-    .system-actions {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-right: 8px;
     }
 
     .expand-icon {
@@ -527,29 +507,8 @@
       margin-right: 8px;
     }
 
-    .tag-status {
-      margin-right: 8px;
-
-      mat-icon {
-        width: 18px;
-        height: 18px;
-        font-size: 18px;
-
-        &.status-enabled {
-          color: #00e676;
-        }
-
-        &.status-partial {
-          color: #ff9100;
-        }
-
-        &.status-disabled {
-          color: rgba(255, 255, 255, 0.4);
-        }
-      }
-    }
-
     .tag-toggle {
+      margin-left: auto;
       margin-right: 8px;
 
       .toggle-badge {
@@ -586,13 +545,6 @@
       height: 20px;
       font-size: 20px;
       color: rgba(255, 255, 255, 0.7);
-    }
-
-    .tag-actions {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-right: 8px;
     }
   }
 
@@ -654,6 +606,23 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+
+    .chip-system {
+      font-size: 10px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 2px;
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      .talkgroup-chip.enabled & {
+        color: rgba(0, 230, 118, 0.7);
+      }
+    }
 
     .chip-label {
       font-size: 13px;
@@ -736,14 +705,21 @@
   justify-content: center;
   width: 32px;
   height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  margin-right: 8px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.05);
   cursor: pointer;
   transition: all 0.2s ease;
+  padding: 0;
 
   mat-icon {
+    width: 18px;
+    height: 18px;
     font-size: 18px;
+    line-height: 18px;
     color: #ffea00;
   }
 
@@ -755,6 +731,8 @@
   &.chip-favorite {
     width: 28px;
     height: 28px;
+    min-width: 28px;
+    min-height: 28px;
     border-radius: 6px;
   }
 }

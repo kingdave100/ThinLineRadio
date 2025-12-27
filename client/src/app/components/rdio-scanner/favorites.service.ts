@@ -17,8 +17,8 @@
  * ****************************************************************************
  */
 
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SettingsService } from './settings/settings.service';
 import { RdioScannerConfig, RdioScannerEvent } from './rdio-scanner';
 import { RdioScannerService } from './rdio-scanner.service';
@@ -35,31 +35,15 @@ export interface FavoritesConfig {
 }
 
 @Injectable()
-export class FavoritesService implements OnDestroy {
+export class FavoritesService {
     private favorites$ = new BehaviorSubject<Set<string>>(new Set());
     private favorites: Set<string> = new Set();
-    private configSubscription?: Subscription;
 
     constructor(
         private settingsService: SettingsService,
         private rdioScannerService: RdioScannerService,
     ) {
         this.loadFavorites();
-        
-        // Subscribe to config events to get user settings
-        this.configSubscription = this.rdioScannerService.event.subscribe((event: RdioScannerEvent) => {
-            if (event.config && event.config.userSettings && event.config.userSettings['favorites']) {
-                const favoritesList = event.config.userSettings['favorites'] as FavoriteItem[];
-                this.favorites = new Set(favoritesList.map(f => this.getFavoriteKey(f)));
-                this.favorites$.next(new Set(this.favorites));
-            }
-        });
-    }
-
-    ngOnDestroy(): void {
-        if (this.configSubscription) {
-            this.configSubscription.unsubscribe();
-        }
     }
 
     private getFavoriteKey(item: FavoriteItem): string {
@@ -100,10 +84,14 @@ export class FavoritesService implements OnDestroy {
 
     addFavorite(item: FavoriteItem): void {
         const key = this.getFavoriteKey(item);
+        console.log('[FavoritesService] Adding favorite:', item, 'key:', key);
         if (key && !this.favorites.has(key)) {
             this.favorites.add(key);
             this.favorites$.next(new Set(this.favorites));
+            console.log('[FavoritesService] Favorite added, saving...');
             this.saveFavorites();
+        } else {
+            console.log('[FavoritesService] Favorite already exists or invalid key');
         }
     }
 
@@ -124,10 +112,14 @@ export class FavoritesService implements OnDestroy {
 
     removeFavorite(item: FavoriteItem): void {
         const key = this.getFavoriteKey(item);
+        console.log('[FavoritesService] Removing favorite:', item, 'key:', key);
         if (this.favorites.has(key)) {
             this.favorites.delete(key);
             this.favorites$.next(new Set(this.favorites));
+            console.log('[FavoritesService] Favorite removed, saving...');
             this.saveFavorites();
+        } else {
+            console.log('[FavoritesService] Favorite does not exist');
         }
     }
 
@@ -170,62 +162,38 @@ export class FavoritesService implements OnDestroy {
     }
 
     private loadFavorites(): void {
-        // First, try to load from config (comes with login)
-        const currentConfig = this.rdioScannerService.getConfig();
-        if (currentConfig && currentConfig.userSettings && currentConfig.userSettings['favorites']) {
-            const favoritesList = currentConfig.userSettings['favorites'] as FavoriteItem[];
-            this.favorites = new Set(favoritesList.map(f => this.getFavoriteKey(f)));
-            this.favorites$.next(new Set(this.favorites));
-            return;
-        }
+        console.log('[FavoritesService] Loading favorites from localStorage');
 
-        // Fallback: try to load from API
-        this.settingsService.getSettings().subscribe({
-            next: (settings) => {
-                if (settings && settings.favorites && Array.isArray(settings.favorites)) {
-                    const favoritesList = settings.favorites as FavoriteItem[];
-                    this.favorites = new Set(favoritesList.map(f => this.getFavoriteKey(f)));
-                } else {
-                    this.favorites = new Set();
-                }
-                this.favorites$.next(new Set(this.favorites));
-            },
-            error: (error) => {
-                console.error('Error loading favorites from settings:', error);
+        try {
+            // Load from localStorage
+            const stored = localStorage.getItem('rdio-scanner-favorites');
+            if (stored) {
+                const favoritesList = JSON.parse(stored) as FavoriteItem[];
+                this.favorites = new Set(favoritesList.map(f => this.getFavoriteKey(f)));
+                console.log('[FavoritesService] Loaded favorites from localStorage:', favoritesList);
+            } else {
                 this.favorites = new Set();
-                this.favorites$.next(new Set(this.favorites));
-            },
-        });
+                console.log('[FavoritesService] No favorites found in localStorage');
+            }
+            this.favorites$.next(new Set(this.favorites));
+        } catch (error) {
+            console.error('[FavoritesService] Error loading favorites from localStorage:', error);
+            this.favorites = new Set();
+            this.favorites$.next(new Set(this.favorites));
+        }
     }
 
     private saveFavorites(): void {
         const favoriteItems = this.getFavoriteItems();
-        
-        this.settingsService.getSettings().subscribe({
-            next: (currentSettings) => {
-                const updatedSettings = {
-                    ...currentSettings,
-                    favorites: favoriteItems,
-                };
-                this.settingsService.saveSettings(updatedSettings).subscribe({
-                    next: () => {
-                        console.log('Favorites saved to settings');
-                    },
-                    error: (error) => {
-                        console.error('Error saving favorites:', error);
-                    },
-                });
-            },
-            error: (error) => {
-                console.error('Error loading current settings for save:', error);
-                // Save just favorites if we can't load current settings
-                this.settingsService.saveSettings({ favorites: favoriteItems }).subscribe({
-                    error: (saveError) => {
-                        console.error('Error saving favorites:', saveError);
-                    },
-                });
-            },
-        });
+        console.log('[FavoritesService] Saving favorites to localStorage:', favoriteItems);
+
+        try {
+            // Save to localStorage
+            localStorage.setItem('rdio-scanner-favorites', JSON.stringify(favoriteItems));
+            console.log('[FavoritesService] Favorites saved successfully to localStorage');
+        } catch (error) {
+            console.error('[FavoritesService] Error saving favorites to localStorage:', error);
+        }
     }
 }
 

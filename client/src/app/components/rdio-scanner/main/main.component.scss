@@ -416,6 +416,22 @@
       color: rgba(255, 255, 255, 0.6);
       text-transform: uppercase;
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .patch-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 6px;
+        background: rgba(255, 145, 0, 0.2);
+        border: 1px solid #ff9100;
+        border-radius: 4px;
+        font-size: 9px;
+        font-weight: 700;
+        color: #ff9100;
+        letter-spacing: 0.5px;
+      }
     }
 
     .talkgroup-box {
