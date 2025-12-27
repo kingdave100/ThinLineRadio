@@ -44,7 +44,7 @@
     <!-- Stats Row -->
     <div class="row three">
         <div>
-            <span>Time {{ clock | date:timeFormat }}</span>
+            <span>{{ clock | date:timeFormat }}</span>
         </div>
         <div>
             <span *ngIf="!linked">NO LINK</span>
@@ -83,7 +83,10 @@
     <div class="talkgroup-container">
         <div class="talkgroup-label">Talkgroup</div>
         <div class="talkgroup-box" [ngClass]="getTalkgroupBoxColor()" [style.color]="getTalkgroupTextColor()">
-            <div class="talkgroup-name" [style.color]="getTalkgroupTextColor()">{{ callTalkgroup || callTalkgroupName }}</div>
+            <div class="talkgroup-info">
+                <div class="talkgroup-tag" [style.color]="getTalkgroupTextColor()">{{ callTalkgroup }}</div>
+                <div class="talkgroup-name" [style.color]="getTalkgroupTextColor()" *ngIf="callTalkgroupName">{{ callTalkgroupName }}</div>
+            </div>
             <div class="favorite-star" *ngIf="callSystem && callTalkgroup">
                 <mat-icon [style.color]="getTalkgroupTextColor()">{{ isFavorite ? 'star' : 'star_border' }}</mat-icon>
             </div>
