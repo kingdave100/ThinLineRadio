@@ -19,7 +19,7 @@
 
 'use strict';
 
-const server = 'http://localhost:3000';
+const server = 'http://192.168.6.67:3000';
 
 module.exports = [
     {
