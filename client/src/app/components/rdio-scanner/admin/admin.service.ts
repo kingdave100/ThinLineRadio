@@ -80,9 +80,6 @@ export interface User {
     pinExpiresAt?: string;
     lastLogin?: string;
     createdAt?: string;
-    stripeCustomerId?: string;
-    stripeSubscriptionId?: string;
-    subscriptionStatus?: string;
     settings?: any;
     systems?: any[];
     systemDelays?: any[];
@@ -107,10 +104,6 @@ export interface UserGroup {
     maxUsers?: number;
     allowAddExistingUsers?: boolean;
     isPublicRegistration?: boolean;
-    billingEnabled?: boolean;
-    billingMode?: string;
-    stripePriceId?: string;
-    pricingOptions?: any;
     collectSalesTax?: boolean;
     createdAt?: string | number;
     systemAccess?: any[] | string;
@@ -218,7 +211,6 @@ export interface Options {
     userRegistrationEnabled?: boolean;
     publicRegistrationEnabled?: boolean;
     publicRegistrationMode?: string;
-    stripePaywallEnabled?: boolean;
     emailServiceEnabled?: boolean;
     emailProvider?: string;
     emailSmtpFromEmail?: string;
@@ -229,11 +221,6 @@ export interface Options {
     emailMailgunApiBase?: string;
     emailLogoFilename?: string;
     emailLogoBorderRadius?: string;
-    stripePublishableKey?: string;
-    stripeSecretKey?: string;
-    stripeWebhookSecret?: string;
-    stripeGracePeriodDays?: number;
-    stripePriceId?: string;
     baseUrl?: string;
     transcriptionEnabled?: boolean;
     transcriptionConfig?: {
@@ -696,9 +683,6 @@ export class RdioScannerAdminService implements OnDestroy {
             pinExpiresAt: this.ngFormBuilder.control(user?.pinExpiresAt),
             lastLogin: this.ngFormBuilder.control(user?.lastLogin),
             createdAt: this.ngFormBuilder.control(user?.createdAt),
-            stripeCustomerId: this.ngFormBuilder.control(user?.stripeCustomerId || ''),
-            stripeSubscriptionId: this.ngFormBuilder.control(user?.stripeSubscriptionId || ''),
-            subscriptionStatus: this.ngFormBuilder.control(user?.subscriptionStatus || ''),
             settings: this.ngFormBuilder.control(user?.settings),
             systems: this.ngFormBuilder.control(user?.systems),
             systemDelays: this.ngFormBuilder.control(user?.systemDelays),
@@ -716,10 +700,6 @@ export class RdioScannerAdminService implements OnDestroy {
             maxUsers: this.ngFormBuilder.control(userGroup?.maxUsers),
             allowAddExistingUsers: this.ngFormBuilder.control(userGroup?.allowAddExistingUsers),
             isPublicRegistration: this.ngFormBuilder.control(userGroup?.isPublicRegistration),
-            billingEnabled: this.ngFormBuilder.control(userGroup?.billingEnabled),
-            billingMode: this.ngFormBuilder.control(userGroup?.billingMode || ''),
-            stripePriceId: this.ngFormBuilder.control(userGroup?.stripePriceId || ''),
-            pricingOptions: this.ngFormBuilder.control(userGroup?.pricingOptions),
             createdAt: this.ngFormBuilder.control(userGroup?.createdAt),
             systemAccess: this.ngFormBuilder.control(userGroup?.systemAccess),
             systemDelays: this.ngFormBuilder.control(userGroup?.systemDelays),
@@ -780,7 +760,6 @@ export class RdioScannerAdminService implements OnDestroy {
             userRegistrationEnabled: this.ngFormBuilder.control(options?.userRegistrationEnabled),
             publicRegistrationEnabled: this.ngFormBuilder.control(options?.publicRegistrationEnabled ?? true),
             publicRegistrationMode: this.ngFormBuilder.control(options?.publicRegistrationMode || 'both'),
-            stripePaywallEnabled: this.ngFormBuilder.control(options?.stripePaywallEnabled),
             emailServiceEnabled: this.ngFormBuilder.control(options?.emailServiceEnabled),
             emailProvider: this.ngFormBuilder.control(options?.emailProvider || 'sendgrid'),
             emailSmtpFromEmail: this.ngFormBuilder.control(options?.emailSmtpFromEmail || ''),
@@ -791,11 +770,6 @@ export class RdioScannerAdminService implements OnDestroy {
             emailMailgunApiBase: this.ngFormBuilder.control(options?.emailMailgunApiBase || 'https://api.mailgun.net'),
             emailLogoFilename: this.ngFormBuilder.control(options?.emailLogoFilename || ''),
             emailLogoBorderRadius: this.ngFormBuilder.control(options?.emailLogoBorderRadius || '0px'),
-            stripePublishableKey: this.ngFormBuilder.control(options?.stripePublishableKey),
-            stripeSecretKey: this.ngFormBuilder.control(options?.stripeSecretKey),
-            stripeWebhookSecret: this.ngFormBuilder.control(options?.stripeWebhookSecret),
-            stripeGracePeriodDays: this.ngFormBuilder.control(options?.stripeGracePeriodDays || 0, [Validators.min(0)]),
-            stripePriceId: this.ngFormBuilder.control(options?.stripePriceId),
             baseUrl: this.ngFormBuilder.control(options?.baseUrl),
             adminLocalhostOnly: this.ngFormBuilder.control(options?.adminLocalhostOnly ?? false),
             transcriptionEnabled: this.ngFormBuilder.control(transcriptionConfig?.enabled || false),
@@ -1543,20 +1517,6 @@ export class RdioScannerAdminService implements OnDestroy {
       return response;
     } catch (error: any) {
       console.error('Failed to update user:', error);
-      throw error;
-    }
-  }
-
-  async syncStripeCustomers(): Promise<any> {
-    try {
-      const response = await firstValueFrom(this.ngHttpClient.post<any>(
-        this.getUrl('/stripe-sync'),
-        {},
-        { headers: this.getHeaders(), responseType: 'json' }
-      ));
-      return response;
-    } catch (error: any) {
-      console.error('Failed to sync with Stripe:', error);
       throw error;
     }
   }

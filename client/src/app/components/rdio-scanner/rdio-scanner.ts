@@ -195,7 +195,6 @@ export interface RdioScannerConfig {
     keypadBeeps: RdioScannerKeypadBeeps | undefined;
     options?: {
         userRegistrationEnabled?: boolean;
-        stripePaywallEnabled?: boolean;
         emailServiceEnabled?: boolean;
         emailSmtpHost?: string;
         emailSmtpPort?: number;
@@ -206,14 +205,6 @@ export interface RdioScannerConfig {
         emailSmtpUseTLS?: boolean;
         emailLogoFilename?: string;
         emailLogoBorderRadius?: string;
-        stripePublishableKey?: string;
-        stripePriceId?: string;
-        pricingOptions?: Array<{
-            priceId: string;
-            label: string;
-            amount: string;
-            trialDays?: number;
-        }>;
         baseUrl?: string;
         turnstileEnabled?: boolean;
         turnstileSiteKey?: string;

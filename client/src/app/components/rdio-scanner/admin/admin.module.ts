@@ -62,7 +62,6 @@ import { RdioScannerAdminImportUnitsComponent } from './tools/import-units/impor
 import { RdioScannerAdminPasswordComponent } from './tools/password/password.component';
 import { RdioScannerAdminRadioReferenceImportComponent } from './tools/radio-reference-import/radio-reference-import.component';
 import { RdioScannerAdminConfigSyncComponent } from './tools/config-sync/config-sync.component';
-import { RdioScannerAdminStripeSyncComponent } from './tools/stripe-sync/stripe-sync.component';
 
 @NgModule({
     declarations: [
@@ -101,7 +100,6 @@ import { RdioScannerAdminStripeSyncComponent } from './tools/stripe-sync/stripe-
         RdioScannerAdminRadioReferenceImportComponent,
         RdioScannerAdminKeywordListsComponent,
         RdioScannerAdminConfigSyncComponent,
-        RdioScannerAdminStripeSyncComponent,
     ],
     exports: [RdioScannerAdminComponent],
     imports: [

@@ -31,7 +31,6 @@ import { RdioScannerUserLoginComponent } from './user-login/user-login.component
 import { RdioScannerUserRegistrationComponent } from './user-registration/user-registration.component';
 import { RdioScannerEmailVerificationComponent } from './email-verification/email-verification.component';
 import { RdioScannerAuthScreenComponent } from './auth-screen/auth-screen.component';
-import { RdioScannerStripeCheckoutComponent } from './stripe-checkout/stripe-checkout.component';
 import { RdioScannerSettingsComponent } from './settings/settings.component';
 import { RdioScannerAlertsComponent } from './alerts/alerts.component';
 import { RdioScannerAlertPreferencesComponent } from './alerts/preferences/preferences.component';
@@ -52,7 +51,6 @@ import { AlertSoundService } from './alert-sound.service';
         RdioScannerUserRegistrationComponent,
         RdioScannerEmailVerificationComponent,
         RdioScannerAuthScreenComponent,
-        RdioScannerStripeCheckoutComponent,
         RdioScannerSettingsComponent,
         RdioScannerAlertsComponent,
         RdioScannerAlertPreferencesComponent,

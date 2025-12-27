@@ -49,13 +49,6 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
     // Account info
     accountInfo: any = null;
     loadingAccount: boolean = false;
-    
-    // Subscription management
-    config: any = null;
-    showCheckout: boolean = false;
-    showChangeSubscription: boolean = false;
-    userEmail: string = '';
-    currentPriceId: string | null = null;
 
     // Forms
     emailForm: FormGroup;
@@ -138,9 +131,7 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
     loadConfig(): void {
         // Subscribe to config updates from the service
         this.rdioScannerService.event.subscribe((event: any) => {
-            if (event.config) {
-                this.config = event.config;
-            }
+            // Config subscription removed with Stripe integration
         });
     }
 
@@ -297,9 +288,6 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
             next: (account) => {
                 this.accountInfo = account;
                 this.emailForm.patchValue({ newEmail: account.email });
-                this.userEmail = account.email || '';
-                // Store current subscription price ID if available
-                this.currentPriceId = account.currentPriceId || null;
                 this.loadingAccount = false;
             },
             error: (error) => {
@@ -529,114 +517,6 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
                 this.updatingPassword = false;
             },
         });
-    }
-
-    openBillingPortal(): void {
-        const pin = this.getPin();
-        if (!pin) {
-            this.snackBar.open('Please log in to manage billing', 'Close', { duration: 3000 });
-            return;
-        }
-
-        const headers = this.getAuthHeaders();
-        const returnUrl = window.location.href;
-        this.http.post<any>('/api/billing/portal', { returnUrl }, {
-            headers,
-            params: { pin: encodeURIComponent(pin) }
-        }).subscribe({
-            next: (response) => {
-                if (response.url) {
-                    window.location.href = response.url;
-                } else {
-                    this.snackBar.open('Failed to open billing portal', 'Close', { duration: 3000 });
-                }
-            },
-            error: (error) => {
-                const message = error.error?.error || 'Failed to open billing portal';
-                this.snackBar.open(message, 'Close', { duration: 5000 });
-            },
-        });
-    }
-    
-    openCheckout(): void {
-        if (!this.accountInfo?.email) {
-            this.snackBar.open('Unable to get your email address', 'Close', { duration: 3000 });
-            return;
-        }
-        this.userEmail = this.accountInfo.email;
-        this.showCheckout = true;
-        this.showChangeSubscription = false;
-    }
-    
-    openChangeSubscription(): void {
-        if (!this.accountInfo?.email) {
-            this.snackBar.open('Unable to get your email address', 'Close', { duration: 3000 });
-            return;
-        }
-        this.userEmail = this.accountInfo.email;
-        this.showChangeSubscription = true;
-        this.showCheckout = true; // Reuse the same checkout modal
-    }
-    
-    onCheckoutSuccess(event: any): void {
-        this.showCheckout = false;
-        this.showChangeSubscription = false;
-        // Reload account info to get updated subscription status
-        this.loadAccountInfo();
-        // Reload page to get updated subscription status
-        window.location.reload();
-    }
-    
-    onCheckoutError(event: any): void {
-        console.error('Checkout error:', event);
-        // Keep checkout open on error
-    }
-    
-    onCheckoutCancel(): void {
-        this.showCheckout = false;
-        this.showChangeSubscription = false;
-    }
-    
-    getSubscriptionStatusDisplay(): string {
-        if (!this.accountInfo) {
-            return 'N/A';
-        }
-        
-        const status = this.accountInfo.subscriptionStatusDisplay || this.accountInfo.subscriptionStatus;
-        
-        // Map status codes to user-friendly messages
-        switch (status) {
-            case 'not_billed':
-                return 'This account is not billed';
-            case 'group_admin_managed':
-                return 'Billing is managed by your group admin';
-            case 'active':
-                return 'Active';
-            case 'trialing':
-                return 'Trialing';
-            case 'canceled':
-                return 'Canceled';
-            case 'past_due':
-                return 'Past Due';
-            case 'unpaid':
-                return 'Unpaid';
-            case 'incomplete':
-                return 'Incomplete';
-            case 'incomplete_expired':
-                return 'Incomplete - Expired';
-            default:
-                return status || 'N/A';
-        }
-    }
-    
-    isGroupAdminManaged(): boolean {
-        if (!this.accountInfo) {
-            return false;
-        }
-        const status = this.accountInfo.subscriptionStatusDisplay || this.accountInfo.subscriptionStatus;
-        return status === 'group_admin_managed' || 
-               (this.accountInfo.billingRequired && !this.accountInfo.isGroupAdmin && 
-                this.accountInfo.subscriptionStatus === 'group_admin_managed');
     }
 
     passwordMatchValidator(form: FormGroup): { [key: string]: boolean } | null {

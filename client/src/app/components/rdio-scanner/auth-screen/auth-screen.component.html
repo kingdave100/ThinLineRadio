@@ -387,55 +387,6 @@
       </form>
     </div>
 
-    <!-- Stripe Checkout -->
-    <div class="checkout-overlay" *ngIf="showCheckout">
-      <div class="checkout-backdrop" (click)="onCheckoutCancel()"></div>
-      <div class="checkout-modal">
-        <rdio-scanner-stripe-checkout
-          *ngIf="config"
-          [config]="config"
-          [email]="loginForm.get('email')?.value"
-          (checkoutSuccess)="onCheckoutSuccess($event)"
-          (checkoutError)="onCheckoutError($event)"
-          (checkoutCancel)="onCheckoutCancel()">
-        </rdio-scanner-stripe-checkout>
-      </div>
-    </div>
-
-    <!-- Checkout Success Modal -->
-    <div class="checkout-overlay" *ngIf="showCheckoutSuccess">
-      <div class="checkout-backdrop" (click)="closeCheckoutSuccess()"></div>
-      <div class="checkout-modal">
-        <div class="checkout-success">
-          <div class="success-icon">
-            <mat-icon>check_circle</mat-icon>
-          </div>
-          <h2>Subscription Successful!</h2>
-          <p>Your subscription has been activated. You can now log in to access all features.</p>
-          <button mat-raised-button color="primary" (click)="closeCheckoutSuccess()">
-            Continue
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Checkout Cancel Modal -->
-    <div class="checkout-overlay" *ngIf="showCheckoutCancel">
-      <div class="checkout-backdrop" (click)="closeCheckoutCancel()"></div>
-      <div class="checkout-modal">
-        <div class="checkout-cancel">
-          <div class="cancel-icon">
-            <mat-icon>cancel</mat-icon>
-          </div>
-          <h2>Checkout Cancelled</h2>
-          <p>Your subscription was not completed. You can try again anytime.</p>
-          <button mat-raised-button color="primary" (click)="closeCheckoutCancel()">
-            Continue
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- Group Admin Login -->
     <div class="auth-form" *ngIf="authMode === 'group-admin'">
       <p class="group-admin-description">Group administrators can manage their group settings, users, and registration codes.</p>

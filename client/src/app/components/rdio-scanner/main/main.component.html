@@ -232,19 +232,4 @@
 </div>
         </div>
     </div>
-
-    <!-- Stripe Checkout Modal -->
-    <div class="checkout-overlay" *ngIf="showCheckout">
-        <div class="checkout-backdrop" (click)="onCheckoutCancel()"></div>
-        <div class="checkout-modal">
-            <rdio-scanner-stripe-checkout
-                *ngIf="config"
-                [config]="config"
-                [email]="userEmail || email"
-                (checkoutSuccess)="onCheckoutSuccess($event)"
-                (checkoutError)="onCheckoutError($event)"
-                (checkoutCancel)="onCheckoutCancel()">
-            </rdio-scanner-stripe-checkout>
-        </div>
-    </div>
 </div>

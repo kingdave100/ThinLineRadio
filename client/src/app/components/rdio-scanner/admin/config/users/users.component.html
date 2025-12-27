@@ -233,36 +233,6 @@
                         </p>
                     </div>
 
-                    <div class="form-section">
-                        <h4>Stripe Billing Information</h4>
-                        <div class="form-row">
-                            <mat-form-field appearance="outline" class="full-width">
-                                <mat-label>Stripe Customer ID</mat-label>
-                                <input matInput type="text" formControlName="stripeCustomerId" placeholder="cus_...">
-                                <mat-hint>Stripe customer ID for billing (e.g., cus_abc123)</mat-hint>
-                            </mat-form-field>
-                        </div>
-                        <div class="form-row">
-                            <mat-form-field appearance="outline" class="half-width">
-                                <mat-label>Stripe Subscription ID</mat-label>
-                                <input matInput type="text" formControlName="stripeSubscriptionId" placeholder="sub_...">
-                                <mat-hint>Stripe subscription ID (e.g., sub_abc123)</mat-hint>
-                            </mat-form-field>
-                            <mat-form-field appearance="outline" class="half-width">
-                                <mat-label>Subscription Status</mat-label>
-                                <mat-select formControlName="subscriptionStatus">
-                                    <mat-option value="">None</mat-option>
-                                    <mat-option value="active">Active</mat-option>
-                                    <mat-option value="incomplete">Incomplete</mat-option>
-                                    <mat-option value="past_due">Past Due</mat-option>
-                                    <mat-option value="canceled">Canceled</mat-option>
-                                    <mat-option value="unpaid">Unpaid</mat-option>
-                                </mat-select>
-                                <mat-hint>Current subscription status</mat-hint>
-                            </mat-form-field>
-                        </div>
-                    </div>
-
                     <div class="form-row">
                         <mat-checkbox formControlName="verified">Email Verified</mat-checkbox>
                         <mat-checkbox formControlName="isGroupAdmin" [disabled]="!editingUser || !editingUser.userGroupId">
@@ -412,16 +382,6 @@
                             <pre>{{ user.talkgroupDelays }}</pre>
                         </div>
                     </div>
-                </div>
-                
-                <div class="detail-row" *ngIf="user.stripeCustomerId">
-                    <span class="label">Stripe Customer:</span>
-                    <span class="value">{{ user.stripeCustomerId }}</span>
-                </div>
-                
-                <div class="detail-row" *ngIf="user.subscriptionStatus">
-                    <span class="label">Subscription:</span>
-                    <span class="value">{{ user.subscriptionStatus }}</span>
                 </div>
 
                 <div class="actions" *ngIf="!editingUser || editingUser.id !== user.id">

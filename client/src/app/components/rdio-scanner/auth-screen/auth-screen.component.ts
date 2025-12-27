@@ -50,9 +50,6 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
   successMessage = '';
   baseUrl = '';
   config: RdioScannerConfig | undefined;
-  showCheckout = false;
-  showCheckoutSuccess = false;
-  showCheckoutCancel = false;
   showForgotPassword = false;
   showResetPassword = false;
   resetEmail = '';
@@ -189,22 +186,9 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
     // Load public registration info and channels
     this.loadPublicRegistrationInfo();
     this.loadAvailableChannels();
-    
-    // Check for Stripe checkout success/cancel parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const checkoutStatus = urlParams.get('checkout');
-    
-    if (checkoutStatus === 'success') {
-      this.showCheckoutSuccess = true;
-      // Clear the URL parameters
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (checkoutStatus === 'cancel') {
-      this.showCheckoutCancel = true;
-      // Clear the URL parameters
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
 
     // Check for invitation code in URL or sessionStorage (captured before Angular loaded)
+    const urlParams = new URLSearchParams(window.location.search);
     let inviteCode = urlParams.get('invite');
     if (!inviteCode) {
       // Check if it was captured in sessionStorage before Angular loaded
@@ -266,13 +250,6 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
         }
         this.config = event.config;
         this.baseUrl = event.config.options?.baseUrl || window.location.origin;
-        
-        // If we're waiting for subscription check, check it now with updated config
-        if (this.waitingForSubscriptionCheck) {
-          this.waitingForSubscriptionCheck = false;
-          console.log('Config updated after login, checking subscription with new config:', this.config);
-          this.handleSubscriptionRequired();
-        }
       }
       
       // Handle connection limit exceeded
@@ -649,13 +626,7 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
           
           console.log('Login error details:', error);
           console.log('Extracted error message:', errorMessage);
-          
-          // Check if this is a subscription required error
-          if (typeof errorMessage === 'string' && errorMessage.includes('Active subscription required')) {
-            this.handleSubscriptionRequired();
-            return;
-          }
-          
+
           this.error = errorMessage;
         }
       });
@@ -762,44 +733,6 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
     return !!(this.config?.email);
   }
 
-  handleSubscriptionRequired(): void {
-    const email = this.loginForm.get('email')?.value;
-    const pricingOptions = this.config?.options?.pricingOptions;
-    const stripePublishableKey = this.config?.options?.stripePublishableKey;
-    
-    console.log('handleSubscriptionRequired called');
-    console.log('Email:', email);
-    console.log('Config:', this.config);
-    console.log('Pricing Options:', pricingOptions);
-    console.log('Stripe Publishable Key:', stripePublishableKey);
-    
-    if (pricingOptions && pricingOptions.length > 0 && stripePublishableKey) {
-      // Show embedded checkout with pricing options
-      this.showCheckout = true;
-    } else {
-      // Show a message to contact support if configuration is missing
-      console.log('Stripe configuration missing, showing support message');
-      this.error = 'Active subscription required. Please contact support to set up your subscription.';
-    }
-  }
-
-  onCheckoutSuccess(event: any): void {
-    console.log('Checkout successful:', event);
-    this.showCheckout = false;
-    // Optionally redirect or show success message
-    this.error = 'Subscription successful! You can now log in.';
-  }
-
-  onCheckoutError(event: any): void {
-    console.log('Checkout error:', event);
-    this.error = 'Checkout failed. Please try again or contact support.';
-  }
-
-  onCheckoutCancel(): void {
-    console.log('Checkout cancelled');
-    this.showCheckout = false;
-  }
-
   loadPublicRegistrationInfo(): void {
     this.loadingGroupInfo = true;
     this.http.get<any>('/api/public-registration-info').subscribe({
@@ -870,14 +803,6 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
     return result;
   }
 
-  closeCheckoutSuccess(): void {
-    this.showCheckoutSuccess = false;
-  }
-
-  closeCheckoutCancel(): void {
-    this.showCheckoutCancel = false;
-  }
-  
   getResendCooldownText(): string {
     if (this.resendCooldown <= 0) {
       return '';

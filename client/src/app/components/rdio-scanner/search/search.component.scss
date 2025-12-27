@@ -282,18 +282,18 @@
 
   .cdk-column-date,
   .mat-column-date {
-    flex: 0 0 70px !important;
-    max-width: 70px !important;
+    flex: 0 0 90px !important;
+    max-width: 90px !important;
   }
 
   .cdk-column-time,
   .mat-column-time {
-    flex: 0 0 70px !important;
-    max-width: 70px !important;
+    flex: 0 0 90px !important;
+    max-width: 90px !important;
 
     &.time12h {
-      flex: 0 0 90px !important;
-      max-width: 90px !important;
+      flex: 0 0 110px !important;
+      max-width: 110px !important;
     }
   }
 
