@@ -604,7 +604,6 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
     }
 
     onCheckoutSuccess(event: any): void {
-        console.log('Checkout successful:', event);
         this.showCheckout = false;
         this.subscriptionActive = true;
         // Reload page to get updated subscription status
@@ -678,8 +677,6 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
             this.settingsService.shouldAutoStartLivefeed().subscribe({
                 next: async (shouldAutoStart) => {
                     if (shouldAutoStart && this.livefeedOffline) {
-                        console.log('Auto-starting livefeed (PWA mode)');
-                        
                         // Force initialize audio - in PWA standalone mode, this should work without user interaction
                         await this.rdioScannerService.ensureAudioReady();
                         
@@ -809,7 +806,6 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
             return response.json();
         })
         .then(data => {
-            console.log('Transfer successful:', data);
             // Reload page to get updated group and subscription status
             window.location.reload();
         })
@@ -1388,8 +1384,6 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
                             return u.id === source.src;
                         })?.label ?? `${source.src}`;
-
-                        console.log('here', this.callUnit);
 
                     } else {
                         this.callUnit = `${source.src}`;

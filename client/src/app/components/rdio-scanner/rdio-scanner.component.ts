@@ -88,7 +88,6 @@ export class RdioScannerComponent implements OnDestroy, OnInit {
     }
 
     onUserAuthenticated(): void {
-        console.log('User authenticated, switching to main component');
         this.userAuthenticated = true;
         this.pinAuthRequired = false;
         if (!this.tryAuthenticateWithStoredPin()) {
@@ -202,8 +201,6 @@ export class RdioScannerComponent implements OnDestroy, OnInit {
             if (event.auth) {
                 // Check if too many connections
                 if (event.tooMany) {
-                    console.log('Connection rejected: too many concurrent connections');
-                    
                     // Clear PIN immediately to prevent retries
                     this.rdioScannerService.clearPin();
                     
@@ -231,9 +228,6 @@ export class RdioScannerComponent implements OnDestroy, OnInit {
                 
                 // Try to authenticate - the service will handle not sending PIN if expired
                 const authenticated = this.tryAuthenticateWithStoredPin();
-                if (authenticated) {
-                    console.log('Submitted stored PIN in response to websocket challenge');
-                }
 
                 this.pinAuthRequired = !authenticated;
                 this.userAuthenticated = authenticated;
@@ -247,7 +241,6 @@ export class RdioScannerComponent implements OnDestroy, OnInit {
         // Handle expired PIN - don't force re-authentication, let them stay logged in
         // but the main component will block access and show checkout
         if ('expired' in event && event.expired === true) {
-            console.log('PIN expired, user will be locked out but can stay logged in');
             // Don't clear PIN or force re-auth - let them stay logged in
             // The main component will handle blocking access
         }

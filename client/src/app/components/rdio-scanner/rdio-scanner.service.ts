@@ -908,15 +908,11 @@ export class RdioScannerService implements OnDestroy {
             const resumePromises: Promise<void>[] = [];
 
             if (this.audioContext) {
-                resumePromises.push(this.audioContext.resume().catch(() => {
-                    console.log('Audio context resume attempted');
-                }));
+                resumePromises.push(this.audioContext.resume().catch(() => {}));
             }
 
             if (this.oscillatorContext) {
-                resumePromises.push(this.oscillatorContext.resume().catch(() => {
-                    console.log('Oscillator context resume attempted');
-                }));
+                resumePromises.push(this.oscillatorContext.resume().catch(() => {}));
             }
 
             await Promise.all(resumePromises);
@@ -940,9 +936,8 @@ export class RdioScannerService implements OnDestroy {
                 this.oscillatorContext.onstatechange = () => resume();
             }
 
-            // Return true even if not running - in PWA mode it will often start as 'suspended' 
+            // Return true even if not running - in PWA mode it will often start as 'suspended'
             // but work once audio actually needs to play
-            console.log(`Audio state - audioContext: ${this.audioContext?.state}, oscillatorContext: ${this.oscillatorContext?.state}`);
             return true;
         } catch (error) {
             console.error('Failed to initialize audio:', error);
@@ -1347,7 +1342,6 @@ export class RdioScannerService implements OnDestroy {
             if (!alert) alert = call.talkgroupData?.alert;
 
             if (alert) await this.playOscillatorSequence(this.config.alerts[alert]);
-            console.log(alert);
         }
     }
 

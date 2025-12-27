@@ -84,14 +84,10 @@ export class FavoritesService {
 
     addFavorite(item: FavoriteItem): void {
         const key = this.getFavoriteKey(item);
-        console.log('[FavoritesService] Adding favorite:', item, 'key:', key);
         if (key && !this.favorites.has(key)) {
             this.favorites.add(key);
             this.favorites$.next(new Set(this.favorites));
-            console.log('[FavoritesService] Favorite added, saving...');
             this.saveFavorites();
-        } else {
-            console.log('[FavoritesService] Favorite already exists or invalid key');
         }
     }
 
@@ -112,14 +108,10 @@ export class FavoritesService {
 
     removeFavorite(item: FavoriteItem): void {
         const key = this.getFavoriteKey(item);
-        console.log('[FavoritesService] Removing favorite:', item, 'key:', key);
         if (this.favorites.has(key)) {
             this.favorites.delete(key);
             this.favorites$.next(new Set(this.favorites));
-            console.log('[FavoritesService] Favorite removed, saving...');
             this.saveFavorites();
-        } else {
-            console.log('[FavoritesService] Favorite does not exist');
         }
     }
 
@@ -162,18 +154,14 @@ export class FavoritesService {
     }
 
     private loadFavorites(): void {
-        console.log('[FavoritesService] Loading favorites from localStorage');
-
         try {
             // Load from localStorage
             const stored = localStorage.getItem('rdio-scanner-favorites');
             if (stored) {
                 const favoritesList = JSON.parse(stored) as FavoriteItem[];
                 this.favorites = new Set(favoritesList.map(f => this.getFavoriteKey(f)));
-                console.log('[FavoritesService] Loaded favorites from localStorage:', favoritesList);
             } else {
                 this.favorites = new Set();
-                console.log('[FavoritesService] No favorites found in localStorage');
             }
             this.favorites$.next(new Set(this.favorites));
         } catch (error) {
@@ -185,12 +173,10 @@ export class FavoritesService {
 
     private saveFavorites(): void {
         const favoriteItems = this.getFavoriteItems();
-        console.log('[FavoritesService] Saving favorites to localStorage:', favoriteItems);
 
         try {
             // Save to localStorage
             localStorage.setItem('rdio-scanner-favorites', JSON.stringify(favoriteItems));
-            console.log('[FavoritesService] Favorites saved successfully to localStorage');
         } catch (error) {
             console.error('[FavoritesService] Error saving favorites to localStorage:', error);
         }

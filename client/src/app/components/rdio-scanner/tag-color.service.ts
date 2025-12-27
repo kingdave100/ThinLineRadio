@@ -330,9 +330,7 @@ export class TagColorService implements OnDestroy {
                     tagColors: this.tagColors,
                 };
                 this.settingsService.saveSettings(updatedSettings).subscribe({
-                    next: () => {
-                        console.log('Tag colors saved to settings');
-                    },
+                    next: () => {},
                     error: (error) => {
                         console.error('Error saving tag colors:', error);
                     },

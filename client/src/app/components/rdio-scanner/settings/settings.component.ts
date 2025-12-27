@@ -235,7 +235,6 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
         this.settings.alertSound = this.alertSound;
         this.settingsService.saveSettings(this.settings).subscribe({
             next: () => {
-                console.log('Settings saved successfully');
                 this.snackBar.open('Settings saved successfully', 'Close', {
                     duration: 3000,
                 });
@@ -580,7 +579,6 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
     }
     
     onCheckoutSuccess(event: any): void {
-        console.log('Checkout successful:', event);
         this.showCheckout = false;
         this.showChangeSubscription = false;
         // Reload account info to get updated subscription status

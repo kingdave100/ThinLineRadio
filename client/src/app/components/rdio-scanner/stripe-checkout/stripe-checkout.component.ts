@@ -67,7 +67,6 @@ export class RdioScannerStripeCheckoutComponent implements OnInit, OnDestroy {
 
     // For now, we'll skip the complex Stripe Elements setup
     // and just show a simple interface that redirects to Stripe Checkout
-    console.log('Stripe configuration loaded successfully');
   }
 
   selectPrice(priceId: string): void {
@@ -124,7 +123,6 @@ export class RdioScannerStripeCheckoutComponent implements OnInit, OnDestroy {
       }
 
       if (result.checkoutUrl) {
-        console.log('Redirecting to Stripe Checkout:', result.checkoutUrl);
         window.location.href = result.checkoutUrl;
       } else {
         this.error = 'No checkout URL received from server. Please contact support.';
