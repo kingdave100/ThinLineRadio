@@ -668,8 +668,8 @@ export class RdioScannerService implements OnDestroy {
         window?.localStorage?.setItem(RdioScannerService.LOCAL_STORAGE_KEY_PIN, window.btoa(pin));
     }
 
-    searchCalls(options: RdioScannerSearchOptions): void {
-        this.sendtoWebsocket(WebsocketCommand.ListCall, options);
+    searchCalls(options: RdioScannerSearchOptions): boolean {
+        return this.sendtoWebsocket(WebsocketCommand.ListCall, options);
     }
 
     skip(options?: { delay?: boolean }): void {
@@ -1593,7 +1593,7 @@ export class RdioScannerService implements OnDestroy {
         window?.localStorage?.setItem(`${RdioScannerService.LOCAL_STORAGE_KEY_LFM}-${this.instanceId}`, JSON.stringify(lfm));
     }
 
-    private sendtoWebsocket(command: string, payload?: unknown, flags?: string): void {
+    private sendtoWebsocket(command: string, payload?: unknown, flags?: string): boolean {
         if (this.websocket?.readyState === 1) {
             const message: unknown[] = [command];
 
@@ -1606,6 +1606,9 @@ export class RdioScannerService implements OnDestroy {
             }
 
             this.websocket.send(JSON.stringify(message));
+            return true;
+        } else {
+            return false;
         }
     }
 
