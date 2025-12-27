@@ -128,7 +128,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
     tempAvoid = 0;
 
-    timeFormat = 'HH:mm';
+    timeFormat = 'HH:mm:ss';
 
     type = '';
 
@@ -903,7 +903,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
             this.email = this.config?.email ?? '';
 
-            this.timeFormat = this.config?.time12hFormat ? 'h:mm a' : 'HH:mm';
+            this.timeFormat = this.config?.time12hFormat ? 'h:mm:ss a' : 'HH:mm:ss';
 
             this.userRegistrationEnabled = this.config?.options?.userRegistrationEnabled ?? false;
 

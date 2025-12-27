@@ -82,6 +82,8 @@ export class RdioScannerService implements OnDestroy {
 
     private audioSource: AudioBufferSourceNode | undefined;
     private audioGainNode: GainNode | undefined;
+    private audioAnalyser: AnalyserNode | undefined;
+    private audioAnalyserData: Uint8Array | undefined;
     private audioSourceStartTime = NaN;
     private volume = 1.0; // Volume level (0.0 to 1.0)
 
@@ -589,14 +591,23 @@ export class RdioScannerService implements OnDestroy {
 
             this.audioSource = this.audioContext.createBufferSource();
             this.audioSource.buffer = buffer;
-            
+
             // Create gain node for volume control if it doesn't exist
             if (!this.audioGainNode) {
                 this.audioGainNode = this.audioContext.createGain();
                 this.audioGainNode.gain.value = this.volume;
-                this.audioGainNode.connect(this.audioContext.destination);
+
+                // Create analyser node for VU meter
+                this.audioAnalyser = this.audioContext.createAnalyser();
+                this.audioAnalyser.fftSize = 256;
+                this.audioAnalyser.smoothingTimeConstant = 0.8;
+                this.audioAnalyserData = new Uint8Array(this.audioAnalyser.frequencyBinCount);
+
+                // Connect audio chain: source -> gain -> analyser -> destination
+                this.audioGainNode.connect(this.audioAnalyser);
+                this.audioAnalyser.connect(this.audioContext.destination);
             }
-            
+
             this.audioSource.connect(this.audioGainNode);
             this.audioSource.onended = () => this.skip({ delay: true });
             this.audioSource.start();
@@ -865,12 +876,21 @@ export class RdioScannerService implements OnDestroy {
 
             if (this.audioContext && this.oscillatorContext) {
                 events.forEach((event) => document.body.removeEventListener(event, bootstrap));
-                
+
                 // Create gain node if audio context exists but gain node doesn't
                 if (this.audioContext && !this.audioGainNode) {
                     this.audioGainNode = this.audioContext.createGain();
                     this.audioGainNode.gain.value = this.volume;
-                    this.audioGainNode.connect(this.audioContext.destination);
+
+                    // Create analyser node for VU meter
+                    this.audioAnalyser = this.audioContext.createAnalyser();
+                    this.audioAnalyser.fftSize = 256;
+                    this.audioAnalyser.smoothingTimeConstant = 0.8;
+                    this.audioAnalyserData = new Uint8Array(this.audioAnalyser.frequencyBinCount);
+
+                    // Connect audio chain: gain -> analyser -> destination
+                    this.audioGainNode.connect(this.audioAnalyser);
+                    this.audioAnalyser.connect(this.audioContext.destination);
                 }
             }
         };

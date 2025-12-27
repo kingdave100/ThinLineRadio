@@ -17,7 +17,7 @@
  * ****************************************************************************
  */
 
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { MatPaginator } from '@angular/material/paginator';
@@ -41,7 +41,7 @@ import { FavoritesService } from '../favorites.service';
     styleUrls: ['./search.component.scss'],
     templateUrl: './search.component.html',
 })
-export class RdioScannerSearchComponent implements OnInit, OnDestroy {
+export class RdioScannerSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     call: RdioScannerCall | undefined;
     callPending: number | undefined;
 
@@ -109,7 +109,6 @@ export class RdioScannerSearchComponent implements OnInit, OnDestroy {
     hasMoreResults = false;
     private backendTotalCount: number | null = null; // Store the backend's reported total count
     private lastSearchOptions: RdioScannerSearchOptions | null = null;
-    private isRefreshing = false; // Guard flag to prevent recursive calls
     private formChangeTimeout: any = null; // Debounce timer for form changes
     private isExecutingFormChange = false; // Guard to prevent multiple simultaneous form change executions
     private lastRequestId: string | null = null; // Track last request to prevent duplicates
@@ -134,6 +133,17 @@ export class RdioScannerSearchComponent implements OnInit, OnDestroy {
             // Trigger change detection to ensure UI updates with loaded config
             this.ngChangeDetectorRef.detectChanges();
         }
+    }
+
+    ngAfterViewInit(): void {
+        // Trigger an initial search when the component loads
+        // This ensures results are displayed when returning to the search view
+        // Use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+        setTimeout(() => {
+            if (this.config && !this.resultsPending && !this.playbackList) {
+                this.searchCalls();
+            }
+        }, 0);
     }
 
     download(id: number): void {
