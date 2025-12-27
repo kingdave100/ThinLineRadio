@@ -7,8 +7,8 @@
   min-width: 0;
   padding: 8px;
   user-select: none;
-  background: var(--scaffold-background, #1e1e1e);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--background-dark);
+  color: var(--text-primary);
 }
 
 .main-container {
@@ -45,8 +45,10 @@
     color: white;
     padding: 2rem;
     background: rgba(30, 30, 30, 0.95);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     max-width: 400px;
+    box-shadow: var(--elevation-4);
+    backdrop-filter: blur(10px);
 
     .lock-actions {
       margin-top: 1.5rem;
@@ -109,12 +111,12 @@
   .checkout-modal {
     position: relative;
     background: white;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     max-width: 600px;
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--elevation-4);
     border: 1px solid white;
     outline: none;
   }
@@ -150,25 +152,26 @@
   padding: 0 8px;
 
   .signout-button {
-    background-color: #ff1744;
+    background-color: var(--warn-color);
     color: white;
     border-radius: 20px;
     padding: 8px 24px;
     font-size: 14px;
     font-weight: 500;
     text-transform: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    transition: all 0.2s ease;
+    box-shadow: var(--elevation-1);
+    transition: all var(--transition-normal);
+    border: none;
 
     &:hover {
       background-color: #d50000;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--elevation-2);
       transform: translateY(-1px);
     }
 
     &:active {
       transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--elevation-1);
     }
   }
 }
@@ -300,16 +303,17 @@
 
 // Display Panel - Dark Theme
 .rdio-display {
-  background: var(--scaffold-background, #1e1e1e);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
   cursor: default;
   display: block;
   font: 400 14px/20px;
   padding: 8px;
   margin-bottom: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--elevation-1);
+  transition: box-shadow var(--transition-normal);
 
   &.idle {
     background: #2e2e2e;
@@ -419,12 +423,17 @@
       align-items: center;
       justify-content: space-between;
       padding: 12px;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       min-height: 50px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      
+      box-shadow: var(--elevation-1);
+      transition: all var(--transition-normal);
+
       // No background by default - transparent
       background: transparent;
+
+      &:hover {
+        box-shadow: var(--elevation-2);
+      }
 
       // Text colors now come from TagColorService via inline styles
       // Colors will be applied via [style.color] in the template
@@ -591,17 +600,20 @@
       align-items: center;
       justify-content: center;
       padding: 6px;
-      background: var(--scaffold-background, #1e1e1e);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 5px;
-      color: rgba(255, 255, 255, 0.8);
+      background: var(--background-dark);
+      border: 1px solid var(--border-color-light);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all var(--transition-normal);
       min-height: 60px;
       gap: 3px;
+      box-shadow: var(--elevation-1);
 
       &:hover {
         background: rgba(255, 255, 255, 0.05);
+        box-shadow: var(--elevation-2);
+        transform: translateY(-1px);
       }
 
       &.active {
@@ -722,8 +734,14 @@
     padding: 10px 12px;
     margin-top: 8px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-normal);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color-light);
+    }
 
     .volume-icon {
       color: rgba(255, 255, 255, 0.7);

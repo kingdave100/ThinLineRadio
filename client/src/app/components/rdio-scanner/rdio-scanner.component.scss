@@ -1,8 +1,8 @@
 $background-color: rgb(30, 30, 30);
 
 :host {
-  background-color: $background-color;
-  color: rgb(255, 255, 255);
+  background-color: var(--background-dark);
+  color: var(--text-primary);
   display: block;
   height: 100%;
   min-width: 320px;
@@ -46,9 +46,10 @@ $background-color: rgb(30, 30, 30);
 
   .mat-toolbar {
     background-color: inherit;
-    box-shadow: 0 4px 8px rgba($background-color, 0.8);
+    box-shadow: var(--elevation-2);
     color: currentColor;
     z-index: 2;
+    transition: box-shadow var(--transition-normal);
 
     > div {
       display: flex;

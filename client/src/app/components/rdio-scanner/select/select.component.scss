@@ -5,8 +5,8 @@
   height: 100%;
   overflow: hidden;
   user-select: none;
-  background: var(--scaffold-background, #1e1e1e);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--background-dark);
+  color: var(--text-primary);
   max-width: 640px;
   margin: 0 auto;
   width: 100%;
@@ -23,8 +23,8 @@
 // Top Section
 .top-section {
   padding: 16px 0;
-  background: var(--scaffold-background, #1e1e1e);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--background-dark);
+  border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
 
   // Search Bar
@@ -33,14 +33,16 @@
     display: flex;
     align-items: center;
     padding: 0 16px;
-    background: var(--scaffold-background, #1e1e1e);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    background: var(--background-dark);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
     margin-bottom: 12px;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
+    box-shadow: var(--elevation-1);
 
     &.focused {
-      border: 2px solid #00e676;
+      border: 2px solid var(--primary-color);
+      box-shadow: var(--elevation-2), 0 0 0 3px rgba(0, 230, 118, 0.1);
     }
 
     .search-icon {
@@ -97,13 +99,14 @@
     height: 48px;
     padding: 12px 16px;
     background: rgba(0, 230, 118, 0.1);
-    border: 1.5px solid #00e676;
-    border-radius: 12px;
-    color: #00e676;
+    border: 1.5px solid var(--primary-color);
+    border-radius: var(--radius-lg);
+    color: var(--primary-color);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
+    box-shadow: var(--elevation-1);
 
     mat-icon {
       width: 20px;
@@ -144,10 +147,17 @@
 
     &:hover {
       background: rgba(0, 230, 118, 0.2);
-      
+      box-shadow: var(--elevation-2);
+      transform: translateY(-1px);
+
       &.error {
         background: rgba(255, 23, 68, 0.2);
       }
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: var(--elevation-1);
     }
   }
 
@@ -308,18 +318,23 @@
 // System Card
 .system-card {
   margin: 0 0 8px 0;
-  background: var(--scaffold-background, #1e1e1e);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--elevation-1);
+  transition: all var(--transition-normal);
+
+  &:hover {
+    box-shadow: var(--elevation-2);
+  }
 
   .system-header {
     display: flex;
     align-items: center;
     padding: 12px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background var(--transition-normal);
 
     &:hover {
       background: rgba(255, 255, 255, 0.05);
@@ -460,10 +475,15 @@
 // Tag Group
 .tag-group {
   margin-bottom: 8px;
-  background: var(--scaffold-background, #1e1e1e);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  transition: all var(--transition-normal);
+
+  &:hover {
+    box-shadow: var(--elevation-1);
+  }
 
   .tag-header {
     display: flex;
@@ -605,21 +625,28 @@
   display: flex;
   flex-direction: column;
   padding: 8px;
-  background: var(--scaffold-background, #1e1e1e);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
   min-height: 80px;
+  box-shadow: var(--elevation-1);
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);
+    box-shadow: var(--elevation-2);
+    transform: translateY(-2px);
   }
 
   &.enabled {
     background: rgba(0, 230, 118, 0.15);
-    border: 2px solid #00e676;
-    box-shadow: 0 0 8px rgba(0, 230, 118, 0.3);
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 12px rgba(0, 230, 118, 0.3);
+
+    &:hover {
+      box-shadow: 0 0 16px rgba(0, 230, 118, 0.4);
+    }
   }
 
   .chip-content {
