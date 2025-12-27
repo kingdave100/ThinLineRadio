@@ -1,5 +1,5 @@
 <mat-sidenav-container [hasBackdrop]="false">
-    <mat-sidenav #searchPanel [autoFocus]="false" [disableClose]="true" position="start" (closedStart)="onSearchPanelClosed()">
+    <mat-sidenav #searchPanel [autoFocus]="false" [disableClose]="true" position="start" mode="over" (closedStart)="onSearchPanelClosed()">
         <div class="panel search">
             <mat-toolbar>
                 <div>
@@ -15,7 +15,7 @@
             </div>
         </div>
     </mat-sidenav>
-    <mat-sidenav #selectPanel [autoFocus]="false" [disableClose]="true" position="end">
+    <mat-sidenav #selectPanel [autoFocus]="false" [disableClose]="true" position="end" mode="over">
         <div class="panel select">
             <mat-toolbar>
                 <div>
@@ -31,7 +31,7 @@
             </div>
         </div>
     </mat-sidenav>
-    <mat-sidenav #settingsPanel [autoFocus]="false" [disableClose]="true" position="end">
+    <mat-sidenav #settingsPanel [autoFocus]="false" [disableClose]="true" position="end" mode="over">
         <div class="panel settings">
             <mat-toolbar>
                 <div>
@@ -47,7 +47,7 @@
             </div>
         </div>
     </mat-sidenav>
-    <mat-sidenav #alertsPanel [autoFocus]="false" [disableClose]="true" position="end">
+    <mat-sidenav #alertsPanel [autoFocus]="false" [disableClose]="true" position="end" mode="over">
         <div class="panel alerts">
             <mat-toolbar>
                 <div>

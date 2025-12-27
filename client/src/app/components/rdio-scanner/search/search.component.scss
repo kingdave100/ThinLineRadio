@@ -299,12 +299,18 @@
 
   .cdk-column-system,
   .mat-column-system {
-    flex: 0 0 80px !important;
-    max-width: 80px !important;
+    flex: 0 0 100px !important;
+    max-width: 100px !important;
   }
 
   .cdk-column-alpha,
   .mat-column-alpha {
+    flex: 0 0 140px !important;
+    max-width: 140px !important;
+  }
+
+  .cdk-column-source,
+  .mat-column-source {
     flex: 0 0 100px !important;
     max-width: 100px !important;
   }

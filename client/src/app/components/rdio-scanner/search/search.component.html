@@ -81,6 +81,14 @@
                 <span>{{ row?.talkgroupData?.label || row?.talkgroup }}</span>
             </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="source">
+            <mat-header-cell *matHeaderCellDef>
+                <span>Radio ID</span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <span>{{ row?.source }}</span>
+            </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef>
                 <span>Name</span>
@@ -89,9 +97,9 @@
                 <span>{{ row?.talkgroupData?.name }}</span>
             </mat-cell>
         </ng-container>
-        <mat-header-row *matHeaderRowDef="['control', 'date', 'time', 'system', 'alpha', 'name']">
+        <mat-header-row *matHeaderRowDef="['control', 'date', 'time', 'system', 'alpha', 'source', 'name']">
         </mat-header-row>
-        <mat-row *matRowDef="let row; columns: ['control', 'date', 'time', 'system', 'alpha', 'name']">
+        <mat-row *matRowDef="let row; columns: ['control', 'date', 'time', 'system', 'alpha', 'source', 'name']">
         </mat-row>
     </mat-table>
     <div class="paginator-container">
