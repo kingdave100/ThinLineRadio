@@ -920,17 +920,28 @@ export class RdioScannerService implements OnDestroy {
         // Get frequency data from analyser
         this.audioAnalyser.getByteFrequencyData(this.audioAnalyserData);
 
-        // Calculate average amplitude across all frequencies
-        let sum = 0;
-        for (let i = 0; i < this.audioAnalyserData.length; i++) {
-            sum += this.audioAnalyserData[i];
-        }
-        const average = sum / this.audioAnalyserData.length;
+        // Focus on lower frequencies (0-4kHz) where voice/radio has most energy
+        // With fftSize=256, we have 128 bins covering 0-22kHz (assuming 44.1kHz sample rate)
+        // So first ~24 bins cover 0-4kHz range
+        const voiceRange = Math.min(24, this.audioAnalyserData.length);
 
-        // Convert 0-255 range to 0-12 scale for VU meter
-        // Apply some scaling to make it more visually interesting
-        const normalized = average / 255;
-        const scaled = Math.pow(normalized, 0.7) * 12; // Power curve for better visualization
+        // Use RMS (root mean square) for better level representation
+        let sumSquares = 0;
+        let maxLevel = 0;
+        for (let i = 0; i < voiceRange; i++) {
+            const value = this.audioAnalyserData[i];
+            sumSquares += value * value;
+            maxLevel = Math.max(maxLevel, value);
+        }
+        const rms = Math.sqrt(sumSquares / voiceRange);
+
+        // Blend RMS (70%) and peak (30%) for responsive but smooth metering
+        const level = (rms * 0.7) + (maxLevel * 0.3);
+
+        // Convert 0-255 range to 0-12 scale with moderate scaling for radio audio
+        // Apply gain boost (1.3x) and power curve (0.5 = square root) for better visualization
+        const normalized = Math.min(1, (level / 255) * 1.3);
+        const scaled = Math.pow(normalized, 0.5) * 12;
 
         return Math.floor(scaled);
     }

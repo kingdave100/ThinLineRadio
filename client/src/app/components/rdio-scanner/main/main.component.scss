@@ -335,14 +335,6 @@
   min-height: 0;
   overflow: visible;
 
-  &.idle {
-    background: #2e2e2e;
-
-    .avoid,
-    .patched {
-      color: #bebebe;
-    }
-  }
 
   * {
     text-overflow: clip;
@@ -469,6 +461,12 @@
 
       // No background by default - transparent
       background: transparent;
+
+      // Active state - subtle grey background when actively playing
+      &.active {
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: var(--elevation-2), inset 0 0 20px rgba(255, 255, 255, 0.03);
+      }
 
       // Text colors now come from TagColorService via inline styles
       // Colors will be applied via [style.color] in the template

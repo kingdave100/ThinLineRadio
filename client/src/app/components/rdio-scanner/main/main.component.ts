@@ -1055,24 +1055,103 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
     }
 
     formatCallDuration(call: RdioScannerCall | undefined): string {
-        if (!call?.audio?.data?.length) {
+        if (!call) {
             return '';
         }
 
-        // Estimate duration based on audio buffer size
-        // Assuming 8kHz sample rate, 16-bit (2 bytes/sample), mono (1 channel)
-        // This is typical for narrowband radio audio
-        const estimatedDurationSeconds = call.audio.data.length / 16000;
+        let durationSeconds = 0;
 
-        if (estimatedDurationSeconds < 60) {
+        // Try to get duration from frequencies array
+        if (Array.isArray(call.frequencies) && call.frequencies.length > 0) {
+            // Find the last frequency entry (highest position)
+            const lastFreq = call.frequencies.reduce((prev, curr) =>
+                ((curr.pos || 0) > (prev.pos || 0)) ? curr : prev
+            );
+
+            // If len is available, use position + length
+            if (lastFreq.len && lastFreq.len > 0) {
+                durationSeconds = (lastFreq.pos || 0) + lastFreq.len;
+            }
+            // Otherwise just use the highest position as an approximation
+            else if (lastFreq.pos && lastFreq.pos > 0) {
+                durationSeconds = lastFreq.pos;
+            }
+        }
+
+        // Try sources array if frequencies didn't give us a duration
+        if (durationSeconds === 0 && Array.isArray(call.sources) && call.sources.length > 0) {
+            const positions = call.sources.map(s => s.pos || 0).filter(p => p > 0);
+            if (positions.length > 0) {
+                durationSeconds = Math.max(...positions);
+            }
+        }
+
+        // Estimate from audio buffer size as last resort
+        if (durationSeconds === 0 && call.audio?.data?.length) {
+            // Estimate based on empirical M4A file size (48 kbps AAC + container overhead ≈ 186 kbps)
+            // This accounts for M4A container headers, metadata, and padding
+            durationSeconds = (call.audio.data.length * 8) / 186000;
+        }
+
+        // If still no duration, return empty
+        if (durationSeconds === 0 || isNaN(durationSeconds)) {
+            return '';
+        }
+
+        if (durationSeconds < 60) {
             // Show as seconds for calls under 1 minute
-            return `${estimatedDurationSeconds.toFixed(0)}s`;
+            return `${Math.round(durationSeconds)}s`;
         } else {
             // Show as mm:ss for longer calls
-            const minutes = Math.floor(estimatedDurationSeconds / 60);
-            const seconds = Math.floor(estimatedDurationSeconds % 60);
+            const minutes = Math.floor(durationSeconds / 60);
+            const seconds = Math.floor(durationSeconds % 60);
             return `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
+    }
+
+    getCallUnitId(call: RdioScannerCall | undefined): string {
+        if (!call) {
+            return '';
+        }
+
+        // Check if call has sources array (multi-source call)
+        if (Array.isArray(call.sources) && call.sources.length) {
+            // Get the first source (or we could get the latest based on position)
+            const source = call.sources[0];
+
+            if (typeof source.src === 'number') {
+                // Try to find unit label in system units
+                if (Array.isArray(call.systemData?.units)) {
+                    const unitLabel = call.systemData?.units?.find((u) => {
+                        if (typeof u.unitFrom === 'number' && typeof u.unitTo === 'number') {
+                            if (u.unitFrom <= (source.src as number) && u.unitTo >= (source.src as number)) {
+                                return true;
+                            }
+                        }
+                        return u.id === source.src;
+                    })?.label;
+
+                    if (unitLabel) {
+                        return unitLabel;
+                    }
+                }
+                // Return raw source ID if no label found
+                return `${source.src}`;
+            }
+        }
+
+        // Check for single source property
+        if (call.source !== undefined) {
+            // Try to find unit label in system units
+            const unitLabel = call.systemData?.units?.find((u) => u.id === call.source)?.label;
+            if (unitLabel) {
+                return unitLabel;
+            }
+            // Return raw source ID if no label found
+            return `${call.source}`;
+        }
+
+        return '';
     }
 
     private getLedColor(call: RdioScannerCall | undefined): string {
