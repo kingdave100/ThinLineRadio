@@ -26,6 +26,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RdioScannerService } from '../rdio-scanner.service';
 import { RdioScannerEvent, RdioScannerConfig } from '../rdio-scanner';
 import { Subscription } from 'rxjs';
+import { ApiServerConfigService } from '../../../services/api-server-config.service';
 
 @Component({
     standalone: false,
@@ -123,7 +124,8 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
     private dialog: MatDialog,
     private rdioScannerService: RdioScannerService,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private apiServerConfig: ApiServerConfigService
   ) {
     // Initialize login form
     this.loginForm = this.fb.group({
@@ -276,11 +278,17 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
     });
   }
 
+  private getApiUrl(path: string): string {
+    const configuredServer = this.apiServerConfig.getServerUrl();
+    const baseUrl = configuredServer || window.location.origin;
+    return `${baseUrl}${path}`;
+  }
+
   handleInvitation(inviteCode: string): void {
     console.log('Handling invitation code:', inviteCode);
-    
+
     // Validate invitation code
-    this.http.get(`/api/user/validate-invitation?code=${inviteCode}`).subscribe({
+    this.http.get(this.getApiUrl(`/api/user/validate-invitation?code=${inviteCode}`)).subscribe({
       next: (response: any) => {
         console.log('Invitation validation response:', response);
         if (response.valid) {
@@ -437,7 +445,7 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
 
       const formData = this.forgotPasswordForm.value;
       
-      this.http.post('/api/user/forgot-password', formData).subscribe({
+      this.http.post(this.getApiUrl('/api/user/forgot-password'), formData).subscribe({
         next: (response: any) => {
           this.loading = false;
           this.resetEmail = formData.email;
@@ -464,7 +472,7 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
         newPassword: this.resetPasswordForm.get('newPassword')?.value
       };
       
-      this.http.post('/api/user/reset-password', formData).subscribe({
+      this.http.post(this.getApiUrl('/api/user/reset-password'), formData).subscribe({
         next: (response: any) => {
           this.loading = false;
           // Reset forms and show login
@@ -514,7 +522,7 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
         formData.turnstile_token = this.turnstileToken;
       }
 
-      this.http.post('/api/group-admin/login', formData).subscribe({
+      this.http.post(this.getApiUrl('/api/group-admin/login'), formData).subscribe({
         next: (response: any) => {
           this.groupAdminLoading = false;
           this.snackBar.open('Login successful!', 'Close', {
@@ -583,7 +591,7 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
         formData.turnstile_token = this.turnstileToken;
       }
       
-      this.http.post('/api/user/login', formData).subscribe({
+      this.http.post(this.getApiUrl('/api/user/login'), formData).subscribe({
         next: (response: any) => {
           this.loading = false;
           const pin = response?.user?.pin;
@@ -674,7 +682,7 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
         formData.turnstile_token = this.turnstileToken;
       }
       
-      this.http.post('/api/user/register', formData).subscribe({
+      this.http.post(this.getApiUrl('/api/user/register'), formData).subscribe({
         next: async (response: any) => {
           this.loading = false;
           
@@ -709,7 +717,7 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
   resendVerification(): void {
     const email = this.registerForm.get('email')?.value;
     if (email) {
-      this.http.post('/api/user/resend-verification', { email }).subscribe({
+      this.http.post(this.getApiUrl('/api/user/resend-verification'), { email }).subscribe({
         next: () => {
           this.error = '';
           this.successMessage = 'Verification email sent! Please check your inbox.';
@@ -735,7 +743,7 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
 
   loadPublicRegistrationInfo(): void {
     this.loadingGroupInfo = true;
-    this.http.get<any>('/api/public-registration-info').subscribe({
+    this.http.get<any>(this.getApiUrl('/api/public-registration-info')).subscribe({
       next: (info) => {
         this.publicGroupInfo = info;
         this.loadingGroupInfo = false;
@@ -749,7 +757,7 @@ export class RdioScannerAuthScreenComponent implements OnInit, OnDestroy, AfterV
 
   loadAvailableChannels(): void {
     this.loadingChannels = true;
-    this.http.get<any>('/api/public-registration-channels').subscribe({
+    this.http.get<any>(this.getApiUrl('/api/public-registration-channels')).subscribe({
       next: (response) => {
         this.availableChannels = response.systems || [];
         this.loadingChannels = false;

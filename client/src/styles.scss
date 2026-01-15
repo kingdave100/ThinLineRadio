@@ -1,7 +1,7 @@
 @use "@angular/material" as mat;
 
-@import "./styles/material-icons";
-@import "./styles/roboto-fonts";
+@use "./styles/material-icons";
+@use "./styles/roboto-fonts";
 
 @include mat.core();
 

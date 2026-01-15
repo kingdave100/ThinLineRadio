@@ -22,6 +22,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ApiServerConfigService } from '../../../services/api-server-config.service';
 
 @Component({
     standalone: false,
@@ -50,7 +51,8 @@ export class RdioScannerGroupAdminLoginComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private apiServerConfig: ApiServerConfigService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -113,6 +115,12 @@ export class RdioScannerGroupAdminLoginComponent implements OnInit, OnDestroy {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 
+  private getApiUrl(path: string): string {
+    const configuredServer = this.apiServerConfig.getServerUrl();
+    const baseUrl = configuredServer || window.location.origin;
+    return `${baseUrl}${path}`;
+  }
+
   onSubmit(): void {
     if (this.loginForm.valid && !this.loading) {
       // Check Turnstile if enabled
@@ -131,7 +139,7 @@ export class RdioScannerGroupAdminLoginComponent implements OnInit, OnDestroy {
         formData.turnstile_token = this.turnstileToken;
       }
 
-      this.http.post('/api/group-admin/login', formData).subscribe({
+      this.http.post(this.getApiUrl('/api/group-admin/login'), formData).subscribe({
         next: (response: any) => {
           this.loading = false;
           this.snackBar.open('Login successful!', 'Close', {

@@ -1121,11 +1121,11 @@ export class RdioScannerService implements OnDestroy {
         let websocketUrl: string;
 
         if (configuredServer) {
-            // Use configured server URL
-            websocketUrl = configuredServer.replace(/^http/, 'ws');
+            // Use configured server URL - convert https to wss, http to ws
+            websocketUrl = configuredServer.replace(/^https/, 'wss').replace(/^http/, 'ws');
         } else {
             // Fallback to window.location.origin
-            websocketUrl = window.location.origin.replace(/^http/, 'ws').replace(/:\d+$/, '') + ':3000';
+            websocketUrl = window.location.origin.replace(/^https/, 'wss').replace(/^http/, 'ws').replace(/:\d+$/, '') + ':3000';
         }
 
         try {
