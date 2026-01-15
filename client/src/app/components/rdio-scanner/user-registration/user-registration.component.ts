@@ -23,6 +23,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RdioScannerService } from '../rdio-scanner.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ApiServerConfigService } from '../../../services/api-server-config.service';
 
 @Component({
     standalone: false,
@@ -59,7 +60,8 @@ export class RdioScannerUserRegistrationComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private rdioScannerService: RdioScannerService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private apiServerConfig: ApiServerConfigService
   ) {
     this.registrationForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -99,10 +101,16 @@ export class RdioScannerUserRegistrationComponent implements OnInit {
       }
     });
   }
-  
+
+  private getApiUrl(path: string): string {
+    const configuredServer = this.apiServerConfig.getServerUrl();
+    const baseUrl = configuredServer || window.location.origin;
+    return `${baseUrl}${path}`;
+  }
+
   handleInvitation(inviteCode: string): void {
     // Validate invitation code
-    this.http.get(`/api/user/validate-invitation?code=${inviteCode}`).subscribe({
+    this.http.get(this.getApiUrl(`/api/user/validate-invitation?code=${inviteCode}`)).subscribe({
       next: (response: any) => {
         if (response.valid) {
           // Pre-fill email if provided in invitation
@@ -133,7 +141,7 @@ export class RdioScannerUserRegistrationComponent implements OnInit {
 
   loadPublicRegistrationInfo(): void {
     this.loadingGroupInfo = true;
-    this.http.get<any>('/api/public-registration-info').subscribe({
+    this.http.get<any>(this.getApiUrl('/api/public-registration-info')).subscribe({
       next: (info) => {
         this.publicGroupInfo = info;
         this.loadingGroupInfo = false;
@@ -147,7 +155,7 @@ export class RdioScannerUserRegistrationComponent implements OnInit {
 
   loadAvailableChannels(): void {
     this.loadingChannels = true;
-    this.http.get<any>('/api/public-registration-channels').subscribe({
+    this.http.get<any>(this.getApiUrl('/api/public-registration-channels')).subscribe({
       next: (response) => {
         this.availableChannels = response.systems || [];
         this.loadingChannels = false;
@@ -261,7 +269,7 @@ export class RdioScannerUserRegistrationComponent implements OnInit {
         formData.invitationCode = this.registrationForm.value.invitationCode;
       }
       
-      this.http.post('/api/user/register', formData).subscribe({
+      this.http.post(this.getApiUrl('/api/user/register'), formData).subscribe({
         next: (response: any) => {
           this.loading = false;
           this.success = true;
@@ -302,7 +310,7 @@ export class RdioScannerUserRegistrationComponent implements OnInit {
       this.loading = true;
       this.error = '';
 
-      this.http.post('/api/user/resend-verification', {
+      this.http.post(this.getApiUrl('/api/user/resend-verification'), {
         email: this.registrationForm.get('email')?.value
       }).subscribe({
         next: (response: any) => {

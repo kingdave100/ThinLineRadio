@@ -39,6 +39,7 @@ import { AlertsService } from './alerts/alerts.service';
 import { TagColorService } from './tag-color.service';
 import { FavoritesService } from './favorites.service';
 import { AlertSoundService } from './alert-sound.service';
+import { ApiServerDialogComponent } from './api-server-dialog/api-server-dialog.component';
 
 @NgModule({
     declarations: [
@@ -54,6 +55,7 @@ import { AlertSoundService } from './alert-sound.service';
         RdioScannerSettingsComponent,
         RdioScannerAlertsComponent,
         RdioScannerAlertPreferencesComponent,
+        ApiServerDialogComponent,
     ],
     exports: [RdioScannerComponent],
     imports: [

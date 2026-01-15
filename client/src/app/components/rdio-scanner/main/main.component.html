@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div class="signout-container" *ngIf="isUserAuthenticated">
+    <div class="signout-container" *ngIf="isUserAuthenticated" style="display: none;">
         <button mat-raised-button class="signout-button" (click)="onSignOut()" title="Sign Out">
             Sign Out
         </button>

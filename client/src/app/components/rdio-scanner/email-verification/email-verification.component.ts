@@ -24,6 +24,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RdioScannerService } from '../rdio-scanner.service';
 import { RdioScannerEvent, RdioScannerConfig } from '../rdio-scanner';
 import { Subscription } from 'rxjs';
+import { ApiServerConfigService } from '../../../services/api-server-config.service';
 
 @Component({
     standalone: false,
@@ -46,7 +47,8 @@ export class RdioScannerEmailVerificationComponent implements OnInit, OnDestroy 
     private router: Router,
     private http: HttpClient,
     private matSnackBar: MatSnackBar,
-    private rdioScannerService: RdioScannerService
+    private rdioScannerService: RdioScannerService,
+    private apiServerConfig: ApiServerConfigService
   ) {}
 
   ngOnInit(): void {
@@ -92,6 +94,12 @@ export class RdioScannerEmailVerificationComponent implements OnInit, OnDestroy 
     }
   }
 
+  private getApiUrl(path: string): string {
+    const configuredServer = this.apiServerConfig.getServerUrl();
+    const baseUrl = configuredServer || window.location.origin;
+    return `${baseUrl}${path}`;
+  }
+
   async verifyEmail(): Promise<void> {
     if (!this.token) {
       this.error = 'No verification token provided.';
@@ -100,7 +108,7 @@ export class RdioScannerEmailVerificationComponent implements OnInit, OnDestroy 
     }
 
     try {
-      const response = await this.http.post('/api/user/verify', {
+      const response = await this.http.post(this.getApiUrl('/api/user/verify'), {
         token: this.token
       }).toPromise();
 

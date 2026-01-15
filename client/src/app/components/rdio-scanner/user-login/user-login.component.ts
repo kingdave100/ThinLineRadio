@@ -22,6 +22,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RdioScannerService } from '../rdio-scanner.service';
+import { ApiServerConfigService } from '../../../services/api-server-config.service';
 
 @Component({
     standalone: false,
@@ -49,7 +50,8 @@ export class RdioScannerUserLoginComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private rdioScannerService: RdioScannerService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private apiServerConfig: ApiServerConfigService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -141,14 +143,20 @@ export class RdioScannerUserLoginComponent implements OnInit, OnDestroy {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 
+  private getApiUrl(path: string): string {
+    const configuredServer = this.apiServerConfig.getServerUrl();
+    const baseUrl = configuredServer || window.location.origin;
+    return `${baseUrl}${path}`;
+  }
+
   onSubmit(): void {
     if (this.loginForm.valid && !this.loading) {
       this.loading = true;
       this.error = '';
 
       const formData = this.loginForm.value;
-      
-      this.http.post('/api/user/login', formData).subscribe({
+
+      this.http.post(this.getApiUrl('/api/user/login'), formData).subscribe({
         next: (response: any) => {
           this.loading = false;
           const pin = response?.user?.pin;
@@ -198,7 +206,7 @@ export class RdioScannerUserLoginComponent implements OnInit, OnDestroy {
 
       const formData = this.forgotPasswordForm.value;
       
-      this.http.post('/api/user/forgot-password', formData).subscribe({
+      this.http.post(this.getApiUrl('/api/user/forgot-password'), formData).subscribe({
         next: (response: any) => {
           this.loading = false;
           this.resetEmail = formData.email;
@@ -225,7 +233,7 @@ export class RdioScannerUserLoginComponent implements OnInit, OnDestroy {
         newPassword: this.resetPasswordForm.get('newPassword')?.value
       };
       
-      this.http.post('/api/user/reset-password', formData).subscribe({
+      this.http.post(this.getApiUrl('/api/user/reset-password'), formData).subscribe({
         next: (response: any) => {
           this.loading = false;
           // Reset forms and show login

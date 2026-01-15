@@ -23,6 +23,7 @@ import { Router } from '@angular/router';
 import { interval, Subscription, timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 import { AppUpdateService } from '../../shared/update/update.service';
+import { ApiServerConfigService } from '../../services/api-server-config.service';
 import {
     RdioScannerAvoidOptions,
     RdioScannerBeepStyle,
@@ -137,6 +138,7 @@ export class RdioScannerService implements OnDestroy {
         appUpdateService: AppUpdateService,
         private router: Router,
         @Inject(DOCUMENT) private document: Document,
+        private apiServerConfig: ApiServerConfigService,
     ) {
         if (router.url.endsWith('/reset')) {
             window?.localStorage?.clear();
@@ -1115,10 +1117,17 @@ export class RdioScannerService implements OnDestroy {
 
         // Always use the root endpoint for WebSocket, regardless of current page URL
         // This ensures the WebSocket connects to the correct endpoint even if user is on /verify or other pages
-        // TODO: fix this lol
-        const websocketUrl = window.location.origin.replace(/^http/, 'ws').replace(/:\d+$/, '') + ':3000';
+        const configuredServer = this.apiServerConfig.getServerUrl();
+        let websocketUrl: string;
 
-        //const websocketUrl = 'ws://192.168.6.67:3000';
+        if (configuredServer) {
+            // Use configured server URL
+            websocketUrl = configuredServer.replace(/^http/, 'ws');
+        } else {
+            // Fallback to window.location.origin
+            websocketUrl = window.location.origin.replace(/^http/, 'ws').replace(/:\d+$/, '') + ':3000';
+        }
+
         try {
             this.websocket = new WebSocket(websocketUrl);
 

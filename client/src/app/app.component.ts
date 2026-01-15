@@ -17,7 +17,10 @@
  * ****************************************************************************
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ApiServerConfigService } from './services/api-server-config.service';
+import { ApiServerDialogComponent } from './components/rdio-scanner/api-server-dialog/api-server-dialog.component';
 
 @Component({
     standalone: false,
@@ -25,4 +28,24 @@ import { Component } from '@angular/core';
     styleUrls: ['./app.component.scss'],
     templateUrl: './app.component.html',
 })
-export class AppComponent { }
+export class AppComponent implements OnInit {
+    constructor(
+        private dialog: MatDialog,
+        private apiServerConfig: ApiServerConfigService
+    ) {}
+
+    ngOnInit(): void {
+        if (!this.apiServerConfig.hasServerUrl()) {
+            const dialogRef = this.dialog.open(ApiServerDialogComponent, {
+                disableClose: true,
+                width: '500px'
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                    this.apiServerConfig.setServerUrl(result);
+                }
+            });
+        }
+    }
+}

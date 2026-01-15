@@ -24,6 +24,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom, timer, timeout, Observable, race } from 'rxjs';
 import { AppUpdateService } from '../../../shared/update/update.service';
 import { RdioScannerToneSet } from '../rdio-scanner';
+import { ApiServerConfigService } from '../../../services/api-server-config.service';
 
 export interface Alert {
     begin: number;
@@ -380,6 +381,7 @@ export class RdioScannerAdminService implements OnDestroy {
         private matSnackBar: MatSnackBar,
         private ngFormBuilder: FormBuilder,
         private ngHttpClient: HttpClient,
+        private apiServerConfig: ApiServerConfigService,
     ) {
         this.configWebSocketOpen();
     }
@@ -990,10 +992,10 @@ export class RdioScannerAdminService implements OnDestroy {
     }
 
     private getUrl(path: string): string {
-        // FORCE REBUILD - URL duplication fix
-        // Get the base URL without the current path
-        const baseUrl = window.location.origin;
-        
+        // Get the base URL from configured server or fallback to window.location.origin
+        const configuredServer = this.apiServerConfig.getServerUrl();
+        const baseUrl = configuredServer || window.location.origin;
+
         // Construct the final URL
         let finalUrl;
         if (path.startsWith('/api/admin')) {
@@ -1003,13 +1005,13 @@ export class RdioScannerAdminService implements OnDestroy {
         } else {
             finalUrl = `${baseUrl}/api/admin/${path}`;
         }
-        
+
         // Add timestamp to force cache refresh
         const timestamp = Date.now();
         // Check if the URL already has query parameters
         const separator = finalUrl.includes('?') ? '&' : '?';
         finalUrl = `${finalUrl}${separator}_t=${timestamp}`;
-        
+
         return finalUrl;
     }
 
