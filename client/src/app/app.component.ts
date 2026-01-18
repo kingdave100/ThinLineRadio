@@ -18,9 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { ApiServerConfigService } from './services/api-server-config.service';
-import { ApiServerDialogComponent } from './components/rdio-scanner/api-server-dialog/api-server-dialog.component';
 
 @Component({
     standalone: false,
@@ -30,22 +28,13 @@ import { ApiServerDialogComponent } from './components/rdio-scanner/api-server-d
 })
 export class AppComponent implements OnInit {
     constructor(
-        private dialog: MatDialog,
         private apiServerConfig: ApiServerConfigService
     ) {}
 
     ngOnInit(): void {
+        // Default to current host if no API server URL is configured
         if (!this.apiServerConfig.hasServerUrl()) {
-            const dialogRef = this.dialog.open(ApiServerDialogComponent, {
-                disableClose: true,
-                width: '500px'
-            });
-
-            dialogRef.afterClosed().subscribe(result => {
-                if (result) {
-                    this.apiServerConfig.setServerUrl(result);
-                }
-            });
+            this.apiServerConfig.setServerUrl(window.location.origin);
         }
     }
 }

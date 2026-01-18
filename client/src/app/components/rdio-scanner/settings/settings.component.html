@@ -1,6 +1,31 @@
 <div class="settings-container">
     <h2>Settings</h2>
     <div class="settings-content">
+        <div class="section api-server-section">
+            <h3>API Server Configuration</h3>
+            <p class="section-description">
+                Configure the API server URL for all requests. Defaults to the current host.
+            </p>
+
+            <div class="api-server-setting">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>API Server URL</mat-label>
+                    <input
+                        matInput
+                        [(ngModel)]="apiServerUrl"
+                        placeholder="http://localhost:3000">
+                    <mat-hint>The base URL for all API requests (login, access, etc.)</mat-hint>
+                </mat-form-field>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="saveApiServerUrl()"
+                    [disabled]="!apiServerUrl">
+                    Save API Server URL
+                </button>
+            </div>
+        </div>
+
         <div class="section livefeed-section">
             <h3>Live Feed Settings</h3>
             <p class="section-description">

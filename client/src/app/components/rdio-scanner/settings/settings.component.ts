@@ -26,6 +26,7 @@ import { RdioScannerService } from '../rdio-scanner.service';
 import { SettingsService } from './settings.service';
 import { TagColorService, TagColorConfig } from '../tag-color.service';
 import { AlertSoundService, AlertSound } from '../alert-sound.service';
+import { ApiServerConfigService } from '../../../services/api-server-config.service';
 
 @Component({
     standalone: false,
@@ -45,6 +46,7 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
     isPWA: boolean = false;
     alertSound: string = 'alert';
     availableAlertSounds: AlertSound[] = [];
+    apiServerUrl: string = '';
 
     // Account info
     accountInfo: any = null;
@@ -70,6 +72,7 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
         private http: HttpClient,
         private fb: FormBuilder,
         private snackBar: MatSnackBar,
+        private apiServerConfig: ApiServerConfigService,
     ) {
         this.passwordVerificationForm = this.fb.group({
             code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
@@ -90,6 +93,7 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
         this.loadAccountInfo();
         this.loadConfig();
         this.loadAlertSounds();
+        this.loadApiServerUrl();
     }
 
     loadAlertSounds(): void {
@@ -236,6 +240,20 @@ export class RdioScannerSettingsComponent implements OnDestroy, OnInit {
 
     previewAlertSound(soundName: string): void {
         this.alertSoundService.previewSound(soundName);
+    }
+
+    loadApiServerUrl(): void {
+        const savedUrl = this.apiServerConfig.getServerUrl();
+        this.apiServerUrl = savedUrl || window.location.origin;
+    }
+
+    saveApiServerUrl(): void {
+        if (this.apiServerUrl) {
+            this.apiServerConfig.setServerUrl(this.apiServerUrl);
+            this.snackBar.open('API Server URL saved. Please reload the page for changes to take effect.', 'Close', {
+                duration: 5000,
+            });
+        }
     }
 
     private getAuthHeaders(): HttpHeaders {
