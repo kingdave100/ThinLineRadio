@@ -181,6 +181,7 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
     private scanningSystemTimer: Subscription | undefined;
     private vuMeterTimer: Subscription | undefined;
     vuMeterLevel = 0;
+    private originalTitle = 'ThickLine Radio';
 
     getCurrentScanningSystem(): string {
         const enabledSystems = this.getEnabledSystems();
@@ -891,6 +892,14 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
                 // Update favorite status when call changes
                 this.updateFavoriteStatus();
+
+                // Update window title with talkgroup tag
+                if (this.call.talkgroupData?.tag) {
+                    document.title = this.call.talkgroupData.tag;
+                }
+            } else {
+                // Restore original title when call ends
+                document.title = this.originalTitle;
             }
 
             // Update scanning animation based on call state
