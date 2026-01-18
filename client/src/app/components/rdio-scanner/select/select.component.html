@@ -52,6 +52,14 @@
       <mat-icon class="favorites-icon">star</mat-icon>
       <span class="favorites-title">Favorites</span>
       <span class="favorites-count" *ngIf="getAllFavoriteTalkgroupsFlat().length > 0">{{ getAllFavoriteTalkgroupsFlat().length }}</span>
+      <div class="favorites-actions" *ngIf="getAllFavoriteTalkgroupsFlat().length > 0">
+        <span class="toggle-badge"
+              [class.all]="isAllFavoritesEnabled()"
+              [class.some]="isSomeFavoritesEnabled()"
+              (click)="toggleAllFavorites($event)">
+          {{ isAllFavoritesEnabled() ? 'All' : isSomeFavoritesEnabled() ? 'Some' : 'None' }}
+        </span>
+      </div>
     </div>
     <div class="favorites-content">
       <div *ngIf="getAllFavoriteTalkgroupsFlat().length === 0" class="empty-favorites">
@@ -66,6 +74,12 @@
             <mat-icon class="expand-icon">{{ isFavoriteGroupExpanded(group.groupName) ? 'expand_more' : 'chevron_right' }}</mat-icon>
             <span class="group-name">{{ group.groupName }}</span>
             <span class="group-count">{{ group.talkgroups.length }}</span>
+            <span class="toggle-badge"
+                  [class.all]="isAllEnabledInFavoriteGroup(group.talkgroups)"
+                  [class.some]="isSomeEnabledInFavoriteGroup(group.talkgroups)"
+                  (click)="toggleFavoriteGroupTalkgroups(group.talkgroups, $event)">
+              {{ isAllEnabledInFavoriteGroup(group.talkgroups) ? 'All' : isSomeEnabledInFavoriteGroup(group.talkgroups) ? 'Some' : 'None' }}
+            </span>
           </div>
           <div *ngIf="isFavoriteGroupExpanded(group.groupName)" class="favorite-group-content">
             <div class="talkgroup-grid">

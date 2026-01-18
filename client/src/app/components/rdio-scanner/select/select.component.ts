@@ -905,6 +905,42 @@ export class RdioScannerSelectComponent implements OnDestroy, OnInit {
         return talkgroup?.tag || 'Untagged';
     }
 
+    toggleFavoriteGroupTalkgroups(talkgroups: Array<{system: RdioScannerSystem, talkgroup: RdioScannerTalkgroup}>, event: Event): void {
+        event.stopPropagation();
+        const allEnabled = talkgroups.every(item => this.isTalkgroupEnabled(item.system.id, item.talkgroup.id));
+        talkgroups.forEach(item => {
+            this.avoid({ system: item.system, talkgroup: item.talkgroup, status: !allEnabled });
+        });
+    }
+
+    isAllEnabledInFavoriteGroup(talkgroups: Array<{system: RdioScannerSystem, talkgroup: RdioScannerTalkgroup}>): boolean {
+        if (talkgroups.length === 0) return false;
+        return talkgroups.every(item => this.isTalkgroupEnabled(item.system.id, item.talkgroup.id));
+    }
+
+    isSomeEnabledInFavoriteGroup(talkgroups: Array<{system: RdioScannerSystem, talkgroup: RdioScannerTalkgroup}>): boolean {
+        const enabled = talkgroups.filter(item => this.isTalkgroupEnabled(item.system.id, item.talkgroup.id)).length;
+        return enabled > 0 && enabled < talkgroups.length;
+    }
+
+    isAllFavoritesEnabled(): boolean {
+        const allFavorites = this.getAllFavoriteTalkgroupsFlat();
+        if (allFavorites.length === 0) return false;
+        return allFavorites.every(item => this.isTalkgroupEnabled(item.system.id, item.talkgroup.id));
+    }
+
+    isSomeFavoritesEnabled(): boolean {
+        const allFavorites = this.getAllFavoriteTalkgroupsFlat();
+        const enabled = allFavorites.filter(item => this.isTalkgroupEnabled(item.system.id, item.talkgroup.id)).length;
+        return enabled > 0 && enabled < allFavorites.length;
+    }
+
+    toggleAllFavorites(event: Event): void {
+        event.stopPropagation();
+        const allEnabled = this.isAllFavoritesEnabled();
+        this.applyFavoritesStatus(!allEnabled);
+    }
+
     private eventHandler(event: RdioScannerEvent): void {
         if (event.config) this.systems = event.config.systems;
         if (event.categories) this.categories = event.categories;
