@@ -893,9 +893,9 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
                 // Update favorite status when call changes
                 this.updateFavoriteStatus();
 
-                // Update window title with talkgroup name
-                if (this.call.talkgroupData?.name) {
-                    document.title = this.call.talkgroupData.name;
+                // Update window title with talkgroup label
+                if (this.call.talkgroupData?.label) {
+                    document.title = this.call.talkgroupData.label;
                 }
             } else {
                 // Restore original title when call ends
