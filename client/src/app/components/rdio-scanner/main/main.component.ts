@@ -1070,8 +1070,12 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
 
         let durationSeconds = 0;
 
+        // First priority: Use actual duration from decoded audio buffer (most accurate)
+        if (call.audioDuration && call.audioDuration > 0) {
+            durationSeconds = call.audioDuration;
+        }
         // Try to get duration from frequencies array
-        if (Array.isArray(call.frequencies) && call.frequencies.length > 0) {
+        else if (Array.isArray(call.frequencies) && call.frequencies.length > 0) {
             // Find the last frequency entry (highest position)
             const lastFreq = call.frequencies.reduce((prev, curr) =>
                 ((curr.pos || 0) > (prev.pos || 0)) ? curr : prev
@@ -1086,23 +1090,15 @@ export class RdioScannerMainComponent implements OnDestroy, OnInit {
                 durationSeconds = lastFreq.pos;
             }
         }
-
         // Try sources array if frequencies didn't give us a duration
-        if (durationSeconds === 0 && Array.isArray(call.sources) && call.sources.length > 0) {
+        else if (Array.isArray(call.sources) && call.sources.length > 0) {
             const positions = call.sources.map(s => s.pos || 0).filter(p => p > 0);
             if (positions.length > 0) {
                 durationSeconds = Math.max(...positions);
             }
         }
 
-        // Estimate from audio buffer size as last resort
-        if (durationSeconds === 0 && call.audio?.data?.length) {
-            // Estimate based on empirical M4A file size (48 kbps AAC + container overhead ≈ 186 kbps)
-            // This accounts for M4A container headers, metadata, and padding
-            durationSeconds = (call.audio.data.length * 8) / 186000;
-        }
-
-        // If still no duration, return empty
+        // If still no duration, return empty (removed the inaccurate bitrate estimation)
         if (durationSeconds === 0 || isNaN(durationSeconds)) {
             return '';
         }

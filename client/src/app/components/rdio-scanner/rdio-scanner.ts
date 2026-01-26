@@ -45,6 +45,7 @@ export interface RdioScannerCall {
     };
     audioName?: string;
     audioType?: string;
+    audioDuration?: number; // Actual duration in seconds from decoded audio buffer
     dateTime: Date;
     delayed: boolean;
     frequencies?: RdioScannerCallFrequency[];

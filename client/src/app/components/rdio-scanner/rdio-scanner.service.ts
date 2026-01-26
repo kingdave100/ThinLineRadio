@@ -589,6 +589,11 @@ export class RdioScannerService implements OnDestroy {
                 return;
             }
 
+            // Store the actual duration from the decoded audio buffer
+            if (this.call) {
+                this.call.audioDuration = buffer.duration;
+            }
+
             await this.playAlert(this.call);
 
             this.audioSource = this.audioContext.createBufferSource();
