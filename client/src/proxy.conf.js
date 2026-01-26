@@ -23,7 +23,7 @@ const server = 'http://192.168.6.67:3000';
 
 module.exports = [
     {
-        context: ['/**', '!/admin**', '!/ng-cli-ws**', '!/reset**'],
+        context: ['/**', '!/ng-cli-ws**', '!/reset**'],
         secure: false,
         target: server,
         ws: true

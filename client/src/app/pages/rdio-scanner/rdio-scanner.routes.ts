@@ -45,10 +45,6 @@ export const routes: Routes = [
                 component: RdioScannerMainPageComponent,
             },
             {
-                path: 'admin',
-                loadChildren: () => import('./admin/admin.module').then((module) => module.RdioScannerAdminPageModule),
-            },
-            {
                 path: 'register',
                 component: RdioScannerUserRegistrationComponent,
             },
